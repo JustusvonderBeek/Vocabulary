@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/learning">
+
+    <fragment
+        android:id="@+id/learning"
+        android:name="com.cloudsheeptech.vocabulary.learning.Learning"
+        android:label="fragment_learning"
+        tools:layout="@layout/fragment_learning" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.cloudsheeptech.vocabulary.MainActivity"
+        android:label="MainActivity" />
+</navigation>

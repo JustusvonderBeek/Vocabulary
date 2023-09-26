@@ -32,11 +32,10 @@
             android:id="@+id/vocabDivider"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            app:layout_constraintStart_toStartOf="@+id/textView"
-            app:layout_constraintEnd_toEndOf="@+id/textView"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
             android:background="@android:color/darker_gray"
-            />
+            app:layout_constraintEnd_toEndOf="@+id/textView"
+            app:layout_constraintStart_toStartOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <TextView
             android:id="@+id/textView2"
@@ -47,5 +46,18 @@
             app:layout_constraintEnd_toEndOf="@+id/textView"
             app:layout_constraintStart_toStartOf="@+id/textView"
             app:layout_constraintTop_toBottomOf="@+id/vocabDivider" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> viewModel.requestVocabulary()}"
+            android:text="Get Data"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -10,8 +10,4 @@
         android:name="com.cloudsheeptech.vocabulary.learning.Learning"
         android:label="fragment_learning"
         tools:layout="@layout/fragment_learning" />
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="com.cloudsheeptech.vocabulary.MainActivity"
-        android:label="MainActivity" />
 </navigation>

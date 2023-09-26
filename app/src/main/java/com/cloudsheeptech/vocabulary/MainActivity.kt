@@ -6,9 +6,19 @@ import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.cloudsheeptech.vocabulary.databinding.ActivityMainBinding
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.BufferedInputStream
 import java.lang.Exception
 import java.net.URL
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,23 +26,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        requestVocabulary()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
     }
 
     private fun requestVocabulary() {
         Log.i("MainActivity", "Request started...")
-        val url = URL("http://localhost:50000/v1/words")
-//        val url = URL("https://vocabulary.cloudsheeptech.com/v1/words")
-        val urlConnection = url.openConnection()
-        try {
-            val income = BufferedInputStream(urlConnection.getInputStream())
-            val data = income.readBytes()
-            val string = data.decodeToString()
-            income.close()
-            Log.i("MainActivity", "Got data: $string")
-        } catch (ex : Exception) {
-            Log.i("MainActivity", "Failed to make request")
+        val job = Job()
+        val scope = CoroutineScope(Dispatchers.Main + job)
+        scope.launch {
+            withContext(Dispatchers.IO) {
+                val client = HttpClient()
+                val response : HttpResponse = client.get("http://10.0.2.2:50000/words")
+                println(response)
+                println(response.bodyAsText(Charsets.UTF_8))
+                client.close()
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.cloudsheeptech.vocabulary.R
+import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.databinding.FragmentEditBinding
 
 class EditFragment : Fragment() {
@@ -26,7 +27,8 @@ class EditFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit, container, false)
-        val viewModelFactory = EditViewModelFactory()
+        // TODO: Fix this vocabulary not being passed around
+        val viewModelFactory = EditViewModelFactory(vocabulary = Vocabulary())
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[EditViewModel::class.java]
         binding.editVM = viewModel
         binding.lifecycleOwner = this

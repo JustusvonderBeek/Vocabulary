@@ -7,7 +7,16 @@
 
     <fragment
         android:id="@+id/learning"
-        android:name="com.cloudsheeptech.vocabulary.learning.Learning"
+        android:name="com.cloudsheeptech.vocabulary.learning.LearningFragment"
         android:label="fragment_learning"
-        tools:layout="@layout/fragment_learning" />
+        tools:layout="@layout/fragment_learning" >
+        <action
+            android:id="@+id/action_learning_to_editFragment"
+            app:destination="@id/edit"
+            app:popUpTo="@id/learning" />
+    </fragment>
+    <fragment
+        android:id="@+id/edit"
+        android:name="com.cloudsheeptech.vocabulary.edit.EditFragment"
+        android:label="fragment_edit" />
 </navigation>

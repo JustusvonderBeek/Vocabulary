@@ -10,7 +10,7 @@ import androidx.databinding.DataBindingUtil
 import com.cloudsheeptech.vocabulary.R
 import com.cloudsheeptech.vocabulary.databinding.FragmentLearningBinding
 
-class Learning : Fragment() {
+class LearningFragment : Fragment() {
 
     private lateinit var viewModel: LearningViewModel
     private lateinit var binding : FragmentLearningBinding
@@ -22,7 +22,7 @@ class Learning : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_learning, container, false)
         val viewModelFactory = LearningViewModelFactory()
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[LearningViewModel::class.java]
-        binding.viewModel = viewModel
+        binding.learningVM = viewModel
         binding.lifecycleOwner = this
 
         return binding.root

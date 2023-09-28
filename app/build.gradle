@@ -65,10 +65,12 @@ dependencies {
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1'
 
     implementation "io.ktor:ktor-client-core:2.3.4"
     implementation "io.ktor:ktor-client-okhttp:2.3.4"
+    implementation "io.ktor:ktor-client-content-negotiation:2.3.4"
+    implementation "io.ktor:ktor-serialization-kotlinx-json:2.3.4"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

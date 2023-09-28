@@ -1,4 +1,4 @@
-package com.cloudsheeptech.data
+package com.cloudsheeptech.vocabulary.data
 
 import kotlinx.serialization.Serializable
 

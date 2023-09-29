@@ -20,7 +20,7 @@
             android:layout_marginEnd="16dp"
             android:ems="10"
             android:inputType="text"
-            android:text="Name"
+            android:text="@={editVM.word}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
             android:layout_marginTop="16dp"
             android:ems="10"
             android:inputType="text"
-            android:text="Name"
+            android:text="@={editVM.translation}"
             app:layout_constraintEnd_toEndOf="@+id/vocabInput"
             app:layout_constraintStart_toStartOf="@+id/vocabInput"
             app:layout_constraintTop_toBottomOf="@+id/vocabInput" />
@@ -43,7 +43,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Button"
+            android:text="Add"
+            android:onClick="@{() -> editVM.addNewWord()}"
             app:layout_constraintEnd_toEndOf="@+id/vocabInput"
             app:layout_constraintStart_toStartOf="@+id/vocabInput"
             app:layout_constraintTop_toBottomOf="@+id/translateInput" />

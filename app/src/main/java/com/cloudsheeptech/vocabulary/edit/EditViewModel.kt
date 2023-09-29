@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EditViewModel(val vocabulary: Vocabulary) : ViewModel() {
 
@@ -21,7 +22,15 @@ class EditViewModel(val vocabulary: Vocabulary) : ViewModel() {
         editVmScope.launch {
             if (word.value != null && translation.value != null) {
                 vocabulary.postVocabulary(word.value!!, translation.value!!)
+                resetValues()
             }
+        }
+    }
+
+    private suspend fun resetValues() {
+        withContext(Dispatchers.Main) {
+            word.value = ""
+            translation.value = ""
         }
     }
 

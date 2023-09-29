@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="16dp"
             android:onClick="@{() -> learningVM.requestVocabulary()}"
-            android:text="Get Data"
+            android:text="@string/btn_get_data"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -31,55 +31,74 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/vocabView"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@{learningVM.learningVocabulary}"
-            android:textAlignment="center"
-            android:textSize="24sp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:padding="32dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button" />
+            app:layout_constraintTop_toBottomOf="@+id/button">
 
-        <View
-            android:id="@+id/vocabDivider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintBottom_toTopOf="@+id/translateView"
-            app:layout_constraintEnd_toEndOf="@+id/vocabView"
-            app:layout_constraintStart_toStartOf="@+id/vocabView"
-            app:layout_constraintTop_toBottomOf="@+id/vocabView" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/editButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_edit_foreground"
+                android:layout_marginBottom="16dp"
+                android:text="@string/btn_edit"
+                android:onClick="@{() -> learningVM.editWord()}" />
 
-        <TextView
-            android:id="@+id/translateView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:text="@{learningVM.translateVocabulary}"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/nextButton"
-            app:layout_constraintEnd_toEndOf="@+id/vocabView"
-            app:layout_constraintStart_toStartOf="@+id/vocabView" />
+            <EditText
+                android:id="@+id/vocabView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@{learningVM.learningVocabulary}"
+                android:textAlignment="center"
+                android:inputType="none"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textSize="24sp" />
 
-        <Button
-            android:id="@+id/nextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="100dp"
-            android:onClick="@{() -> learningVM.showNewVocabulary()}"
-            android:text="Nächste Vokabel"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/vocabView"
-            app:layout_constraintStart_toStartOf="@id/vocabView" />
+            <View
+                android:id="@+id/vocabDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@android:color/darker_gray" />
+
+            <EditText
+                android:id="@+id/translateView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:text="@{learningVM.translateVocabulary}"
+                android:inputType="none"
+                android:enabled="false"
+                android:textAlignment="center"
+                android:textSize="24sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/nextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> learningVM.showNewVocabulary()}"
+                android:text="@string/btn_next_word" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@{learningVM.progress}"
+                android:textAlignment="center" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

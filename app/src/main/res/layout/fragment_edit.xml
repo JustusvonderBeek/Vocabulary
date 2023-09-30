@@ -4,7 +4,7 @@
 
     <data>
         <variable
-            name="editVM"
+            name="viewModel"
             type="com.cloudsheeptech.vocabulary.edit.EditViewModel" />
     </data>
 
@@ -12,43 +12,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/vocabInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:ems="10"
-            android:inputType="text"
-            android:text="@={editVM.word}"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/vocab_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/update_vocab_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/translateInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:ems="10"
-            android:inputType="text"
-            android:text="@={editVM.translation}"
-            app:layout_constraintEnd_toEndOf="@+id/vocabInput"
-            app:layout_constraintStart_toStartOf="@+id/vocabInput"
-            app:layout_constraintTop_toBottomOf="@+id/vocabInput" />
+        </androidx.recyclerview.widget.RecyclerView>
 
-        <Button
-            android:id="@+id/inputBtn"
-            android:layout_width="wrap_content"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/update_vocab_btn"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Add"
-            android:onClick="@{() -> editVM.addNewWord()}"
-            app:layout_constraintEnd_toEndOf="@+id/vocabInput"
-            app:layout_constraintStart_toStartOf="@+id/vocabInput"
-            app:layout_constraintTop_toBottomOf="@+id/translateInput" />
+            android:layout_marginBottom="100dp"
+            android:onClick="@{() -> viewModel.editVocabulary()}"
+            android:text="@string/btn_edit_send"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/vocab_list"
+            app:layout_constraintStart_toStartOf="@+id/vocab_list" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

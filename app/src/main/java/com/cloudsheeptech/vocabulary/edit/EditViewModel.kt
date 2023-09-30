@@ -1,36 +1,22 @@
 package com.cloudsheeptech.vocabulary.edit
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.cloudsheeptech.vocabulary.data.Vocabulary
+import com.cloudsheeptech.vocabulary.data.Word
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class EditViewModel(val vocabulary: Vocabulary) : ViewModel() {
+class EditViewModel(private val vocabulary: Vocabulary) : ViewModel() {
 
     private val job = Job()
-    private val editVmScope = CoroutineScope(Dispatchers.IO + job)
+    private val scope = CoroutineScope(Dispatchers.IO + job)
 
-    val word = MutableLiveData<String>()
-    val translation = MutableLiveData<String>()
-
-    fun addNewWord() {
-        editVmScope.launch {
-            if (word.value != null && translation.value != null) {
-                vocabulary.postVocabulary(word.value!!, translation.value!!)
-                resetValues()
-            }
-        }
-    }
-
-    private suspend fun resetValues() {
-        withContext(Dispatchers.Main) {
-            word.value = ""
-            translation.value = ""
+    fun editVocabulary() {
+        scope.launch {
+            val word = Word(ID = 1, "Qualle", "lalala")
+            vocabulary.postItemVocabulary(word)
         }
     }
 

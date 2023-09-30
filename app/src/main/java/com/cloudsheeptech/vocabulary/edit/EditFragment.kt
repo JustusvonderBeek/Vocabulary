@@ -30,7 +30,7 @@ class EditFragment : Fragment() {
         // TODO: Fix this vocabulary not being passed around
         val viewModelFactory = EditViewModelFactory(vocabulary = Vocabulary())
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[EditViewModel::class.java]
-        binding.editVM = viewModel
+        binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
         return binding.root

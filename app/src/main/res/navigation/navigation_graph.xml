@@ -8,15 +8,14 @@
     <fragment
         android:id="@+id/learning"
         android:name="com.cloudsheeptech.vocabulary.learning.LearningFragment"
-        android:label="fragment_learning"
-        tools:layout="@layout/fragment_learning" >
-        <action
-            android:id="@+id/action_learning_to_editFragment"
-            app:destination="@id/edit"
-            app:popUpTo="@id/learning" />
-    </fragment>
+        android:label="@string/nav_btn_learn"
+        tools:layout="@layout/fragment_learning" />
+    <fragment
+        android:id="@+id/add"
+        android:name="com.cloudsheeptech.vocabulary.add.AddFragment"
+        android:label="@string/nav_btn_add" />
     <fragment
         android:id="@+id/edit"
         android:name="com.cloudsheeptech.vocabulary.edit.EditFragment"
-        android:label="fragment_edit" />
+        android:label="@string/nav_btn_edit" />
 </navigation>

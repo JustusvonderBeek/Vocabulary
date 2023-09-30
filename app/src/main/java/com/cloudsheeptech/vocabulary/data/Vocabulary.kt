@@ -1,5 +1,8 @@
 package com.cloudsheeptech.vocabulary.data
 
+import android.app.Application
+import android.os.Environment
+import android.os.FileUtils
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -20,6 +23,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.Identity.encode
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.io.File
 import java.lang.Exception
 
 class Vocabulary {
@@ -29,7 +33,8 @@ class Vocabulary {
     val vocabulary : List<Word>
         get() = _vocabulary
 
-    private var wordIndex = 0
+    var size = vocabulary.size
+    var wordIndex = 0
 
     private lateinit var client : HttpClient
 
@@ -37,7 +42,21 @@ class Vocabulary {
         if (_vocabulary.isEmpty()) {
             return Word(-1, "Null", "Null")
         }
-        return vocabulary[wordIndex++ % vocabulary.size]
+        val next = vocabulary[wordIndex % vocabulary.size]
+        wordIndex = (wordIndex + 1) % vocabulary.size
+        return next
+    }
+
+    private fun loadVocabularyFromDisk() {
+
+    }
+
+    private fun storeVocabularyToDisk() {
+        val file = File(Environment.getDataDirectory(), "vocabulary.json")
+        val writer = file.writer(Charsets.UTF_8)
+        val stringVocab = Json.encodeToString(_vocabulary)
+        writer.write(stringVocab)
+        writer.close()
     }
 
     private suspend fun initClient() {
@@ -67,7 +86,9 @@ class Vocabulary {
                 val response : HttpResponse = client.get("https://vocabulary.cloudsheeptech.com:50002/words")
                 println("Body:\n${response.bodyAsText(Charsets.UTF_8)}")
                 val bdy = response.body<List<Word>>()
+                _vocabulary.clear()
                 _vocabulary.addAll(bdy)
+                size = _vocabulary.size
 //            Log.i("Vocabulary", "Updated list to $_vocabulary")
                 Log.i("Vocabulary", "Update successful")
             } catch (ex : Exception) {
@@ -101,6 +122,23 @@ class Vocabulary {
                 val response : HttpResponse = client.post("https://vocabulary.cloudsheeptech.com:50002/words") {
                     setBody(rawWord)
                 }
+            } catch (ex : Exception) {
+                Log.e("Vocabulary", "Failed to post item:\n$ex")
+            }
+        }
+    }
+
+    suspend fun postItemVocabulary(word: Word) {
+        val init = this::client.isInitialized
+        withContext(Dispatchers.IO) {
+            if (!init)
+                initClient()
+            try {
+                val rawWord = Json.encodeToString(word)
+                val response : HttpResponse = client.post("https://vocabulary.cloudsheeptech.com:50002/words/" + word.ID) {
+                    setBody(rawWord)
+                }
+                Log.i("Vocabulary", "Updated word ${word.ID}")
             } catch (ex : Exception) {
                 Log.e("Vocabulary", "Failed to post item:\n$ex")
             }

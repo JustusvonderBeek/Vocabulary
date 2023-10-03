@@ -12,4 +12,5 @@
     <string name="nav_btn_add">Add vocabulary</string>
     <string name="btn_edit_send">Update vocabulary</string>
     <string name="btn_edit">Start Editing Word</string>
+    <string name="btn_rmv_word">Remove Word</string>
 </resources>

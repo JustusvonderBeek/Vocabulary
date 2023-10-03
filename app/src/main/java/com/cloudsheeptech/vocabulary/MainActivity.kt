@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfig)
 //        NavigationUI.setupActionBarWithNavController(this, navController)
         botNav.setupWithNavController(navController)
+
+        val vocabulary = Vocabulary()
     }
 
     override fun onSupportNavigateUp(): Boolean {

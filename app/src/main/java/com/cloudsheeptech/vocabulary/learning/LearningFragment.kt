@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.cloudsheeptech.vocabulary.R
+import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.databinding.FragmentLearningBinding
 
 class LearningFragment : Fragment() {
@@ -22,7 +23,7 @@ class LearningFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_learning, container, false)
-        val viewModelFactory = LearningViewModelFactory()
+        val viewModelFactory = LearningViewModelFactory(Vocabulary())
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[LearningViewModel::class.java]
         binding.learningVM = viewModel
         binding.lifecycleOwner = this

@@ -1,7 +1,11 @@
 package com.cloudsheeptech.vocabulary.add
 
+import android.os.Environment
+import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.cloudsheeptech.vocabulary.SingleEvent
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +21,10 @@ class AddViewModel(val vocabulary: Vocabulary) : ViewModel() {
     val word = MutableLiveData<String>()
     val translation = MutableLiveData<String>()
 
+    private val handledToast = MutableLiveData<SingleEvent<String>>()
+    val toast : LiveData<SingleEvent<String>>
+        get() = handledToast
+
     fun addNewWord() {
         editVmScope.launch {
             if (word.value != null && translation.value != null) {
@@ -30,6 +38,7 @@ class AddViewModel(val vocabulary: Vocabulary) : ViewModel() {
         withContext(Dispatchers.Main) {
             word.value = ""
             translation.value = ""
+            handledToast.value = SingleEvent("Added vocabulary")
         }
     }
 

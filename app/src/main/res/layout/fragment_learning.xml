@@ -91,6 +91,13 @@
                 android:onClick="@{() -> learningVM.showNewVocabulary()}"
                 android:text="@string/btn_next_word" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/rmvBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> learningVM.removeWord()}"
+                android:text="@string/btn_rmv_word" />
+
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"

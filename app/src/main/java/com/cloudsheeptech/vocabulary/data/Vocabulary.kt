@@ -12,10 +12,12 @@ import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.HttpResponsePipeline
 import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,7 +26,7 @@ import io.ktor.util.Identity.encode
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.lang.Exception
+import kotlin.Exception
 
 class Vocabulary {
 
@@ -34,7 +36,7 @@ class Vocabulary {
         get() = _vocabulary
 
     var size = vocabulary.size
-    var wordIndex = 0
+    var wordIndex = -1
 
     private lateinit var client : HttpClient
 
@@ -42,9 +44,8 @@ class Vocabulary {
         if (_vocabulary.isEmpty()) {
             return Word(-1, "Null", "Null")
         }
-        val next = vocabulary[wordIndex % vocabulary.size]
         wordIndex = (wordIndex + 1) % vocabulary.size
-        return next
+        return vocabulary[wordIndex]
     }
 
     private fun loadVocabularyFromDisk() {
@@ -141,6 +142,22 @@ class Vocabulary {
                 Log.i("Vocabulary", "Updated word ${word.ID}")
             } catch (ex : Exception) {
                 Log.e("Vocabulary", "Failed to post item:\n$ex")
+            }
+        }
+    }
+
+    suspend fun removeVocabularyItem(id : Int) {
+        val init = this::client.isInitialized
+        withContext(Dispatchers.IO) {
+            if (!init) {
+                initClient()
+            }
+            try {
+                val response : HttpResponse = client.delete("https://vocabulary.cloudsheeptech.com:50002/words/$id") {
+                    setBody("")
+                }
+            } catch (ex : Exception) {
+                Log.e("Vocabulary", "Failed to remove item:\n$ex")
             }
         }
     }

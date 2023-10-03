@@ -22,7 +22,7 @@ import java.io.BufferedInputStream
 import java.lang.Exception
 import java.net.URL
 
-class LearningViewModel : ViewModel() {
+class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
 
     private val job = Job()
     private val vmScope = CoroutineScope(Dispatchers.Main + job)
@@ -43,8 +43,6 @@ class LearningViewModel : ViewModel() {
     val editingWord : LiveData<Boolean>
         get() = _editToggle
 
-    private val vocabulary = Vocabulary()
-
     init {
         _learningVocab.value = "Learning"
         _translateVocab.value = "Lernen"
@@ -55,6 +53,7 @@ class LearningViewModel : ViewModel() {
     fun requestVocabulary() {
         vmScope.launch {
             vocabulary.updateVocabulary()
+            showNewVocabulary()
         }
     }
 
@@ -65,6 +64,13 @@ class LearningViewModel : ViewModel() {
         this._translateVocab.value = next.Translation
         this._progress.value = (vocabulary.wordIndex + 1).toString() + "/" + vocabulary.size.toString()
         Log.i("LearningViewModel", "Updated vocab to: ${_learningVocab.value}")
+    }
+
+    fun removeWord() {
+        Log.i("LearningViewModel", "Removing word at ${vocabulary.wordIndex}")
+        vmScope.launch {
+            vocabulary.removeVocabularyItem(vocabulary.wordIndex)
+        }
     }
 
     fun editWord() {

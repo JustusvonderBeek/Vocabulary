@@ -8,12 +8,12 @@
         android:icon="@drawable/ic_learn_foreground"
         android:title="@string/nav_btn_learn" />
 
-    <item
-        android:id="@+id/edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:icon="@drawable/ic_edit_foreground"
-        android:title="@string/nav_btn_edit" />
+<!--    <item-->
+<!--        android:id="@+id/edit"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:icon="@drawable/ic_edit_foreground"-->
+<!--        android:title="@string/nav_btn_edit" />-->
 
     <item
         android:id="@+id/add"

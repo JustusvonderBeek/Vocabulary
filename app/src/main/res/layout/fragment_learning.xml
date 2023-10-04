@@ -34,13 +34,23 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            android:padding="32dp"
+            android:paddingTop="8dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:paddingBottom="32dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/rmvBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:onClick="@{() -> learningVM.removeWord()}"
+                android:text="@string/btn_rmv_word" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/editButton"
@@ -80,7 +90,8 @@
                 android:layout_marginBottom="32dp"
                 android:text="@{learningVM.translateVocabulary}"
                 android:inputType="none"
-                android:enabled="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:textAlignment="center"
                 android:textSize="24sp" />
 
@@ -88,15 +99,8 @@
                 android:id="@+id/nextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> learningVM.showNewVocabulary()}"
+                android:onClick="@{() -> learningVM.showNextWord()}"
                 android:text="@string/btn_next_word" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/rmvBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="@{() -> learningVM.removeWord()}"
-                android:text="@string/btn_rmv_word" />
 
             <TextView
                 android:id="@+id/textView"

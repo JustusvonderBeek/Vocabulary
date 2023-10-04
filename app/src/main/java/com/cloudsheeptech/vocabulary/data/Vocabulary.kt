@@ -1,28 +1,21 @@
 package com.cloudsheeptech.vocabulary.data
 
-import android.app.Application
 import android.os.Environment
-import android.os.FileUtils
 import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.HttpResponsePipeline
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.util.Identity.encode
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -30,23 +23,13 @@ import kotlin.Exception
 
 class Vocabulary {
 
-    private val _vocabulary = mutableListOf<Word>()
+    private val baseUrl = "https://vocabulary.cloudsheeptech.com:50002/"
+    private var _vocabulary = mutableListOf<Word>()
 
     val vocabulary : List<Word>
         get() = _vocabulary
 
-    var size = vocabulary.size
-    var wordIndex = -1
-
     private lateinit var client : HttpClient
-
-    fun getNextVocabulary() : Word {
-        if (_vocabulary.isEmpty()) {
-            return Word(-1, "Null", "Null")
-        }
-        wordIndex = (wordIndex + 1) % vocabulary.size
-        return vocabulary[wordIndex]
-    }
 
     private fun loadVocabularyFromDisk() {
 
@@ -84,12 +67,11 @@ class Vocabulary {
                 initClient()
             }
             try {
-                val response : HttpResponse = client.get("https://vocabulary.cloudsheeptech.com:50002/words")
+                val response : HttpResponse = client.get(baseUrl + "words")
                 println("Body:\n${response.bodyAsText(Charsets.UTF_8)}")
                 val bdy = response.body<List<Word>>()
                 _vocabulary.clear()
                 _vocabulary.addAll(bdy)
-                size = _vocabulary.size
 //            Log.i("Vocabulary", "Updated list to $_vocabulary")
                 Log.i("Vocabulary", "Update successful")
             } catch (ex : Exception) {
@@ -104,7 +86,7 @@ class Vocabulary {
             if (!init)
                 initClient()
             try {
-                val response : HttpResponse = client.get("https://vocabulary.cloudsheeptech.com:50002/words/$id")
+                val response : HttpResponse = client.get(baseUrl + "words/$id")
                 println("Body:\n${response.bodyAsText()}")
             } catch (ex : Exception) {
                 Log.e("Vocabulary", "Failed to get item:\n$ex")
@@ -113,33 +95,44 @@ class Vocabulary {
     }
 
     suspend fun postVocabulary(vocab : String, translation : String) {
+        val word = Word(vocabulary.size, vocab, translation)
+        postVocabularyItem(word)
+    }
+
+    suspend fun postVocabularyItem(word: Word) {
         val init = this::client.isInitialized
         withContext(Dispatchers.IO) {
             if (!init)
                 initClient()
-            val word = Word(vocabulary.size, vocab, translation)
             try {
                 val rawWord = Json.encodeToString(word)
-                val response : HttpResponse = client.post("https://vocabulary.cloudsheeptech.com:50002/words") {
+                val response : HttpResponse = client.post(baseUrl + "words") {
                     setBody(rawWord)
                 }
+                if (response.status != HttpStatusCode.Created) {
+                    Log.e("Vocabulary", "Creation of vocabulary not successful")
+                }
+                return@withContext
             } catch (ex : Exception) {
                 Log.e("Vocabulary", "Failed to post item:\n$ex")
             }
         }
     }
 
-    suspend fun postItemVocabulary(word: Word) {
+    suspend fun modifyVocabularyItem(word: Word) {
         val init = this::client.isInitialized
         withContext(Dispatchers.IO) {
             if (!init)
                 initClient()
             try {
                 val rawWord = Json.encodeToString(word)
-                val response : HttpResponse = client.post("https://vocabulary.cloudsheeptech.com:50002/words/" + word.ID) {
+                val response : HttpResponse = client.post(baseUrl + "words/" + word.ID) {
                     setBody(rawWord)
                 }
-                Log.i("Vocabulary", "Updated word ${word.ID}")
+                if (response.status != HttpStatusCode.Created) {
+                    Log.e("Vocabulary", "Modification of vocabulary not successful")
+                }
+                return@withContext
             } catch (ex : Exception) {
                 Log.e("Vocabulary", "Failed to post item:\n$ex")
             }
@@ -153,9 +146,27 @@ class Vocabulary {
                 initClient()
             }
             try {
-                val response : HttpResponse = client.delete("https://vocabulary.cloudsheeptech.com:50002/words/$id") {
-                    setBody("")
+                if (vocabulary.isEmpty()) {
+                    Log.i("Vocabulary", "Own vocabulary is empty. Cannot remove")
+                    return@withContext
                 }
+                if (id >= vocabulary.size || id < 0) {
+                    Log.e("Vocabulary", "Given index $id is larger than vocabulary size ${vocabulary.size} or invalid")
+                    return@withContext
+                }
+                val removeWord = vocabulary[id]
+                val rawRemoveWord = Json.encodeToString(removeWord)
+                val response : HttpResponse = client.delete(baseUrl + "words/$id") {
+                    setBody(rawRemoveWord)
+                }
+                if (response.status != HttpStatusCode.OK) {
+                    Log.e("Vocabulary", "Item not successfully removed")
+                }
+                withContext(Dispatchers.Main) {
+                    val decoded = Json.decodeFromString<MutableList<Word>>(response.bodyAsText(Charsets.UTF_8))
+                    _vocabulary = decoded
+                }
+                return@withContext
             } catch (ex : Exception) {
                 Log.e("Vocabulary", "Failed to remove item:\n$ex")
             }

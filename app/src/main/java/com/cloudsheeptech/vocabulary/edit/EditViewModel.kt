@@ -16,7 +16,7 @@ class EditViewModel(private val vocabulary: Vocabulary) : ViewModel() {
     fun editVocabulary() {
         scope.launch {
             val word = Word(ID = 1, "Qualle", "lalala")
-            vocabulary.postItemVocabulary(word)
+            vocabulary.postVocabularyItem(word)
         }
     }
 

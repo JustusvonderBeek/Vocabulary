@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.cloudsheeptech.vocabulary.SingleEvent
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.data.Word
 import kotlinx.coroutines.CoroutineScope
@@ -29,9 +30,15 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
     val progress : LiveData<String>
         get() = _progress
 
-    private val _editToggle = MutableLiveData<Boolean>()
-    val editingWord : LiveData<Boolean>
+    private var _internalEditToggle = false
+
+    private val _editToggle = MutableLiveData<SingleEvent<Boolean>>()
+    val editToggle : LiveData<SingleEvent<Boolean>>
         get() = _editToggle
+
+    private val _editedToggle = MutableLiveData<SingleEvent<Boolean>>()
+    val editedToggle : LiveData<SingleEvent<Boolean>>
+        get() = _editedToggle
 
     private var currVocabIdx = 0
 
@@ -39,7 +46,6 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
         _learningVocab.value = "Learning"
         _translateVocab.value = "Lernen"
         _progress.value = "0/0"
-        _editToggle.value = false
     }
 
     fun requestVocabulary() {
@@ -56,7 +62,7 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
         Log.i("LearningViewModel", "Get next word")
         var next = Word(ID = 0, Vocabulary = "Empty", Translation = "Empty")
         if (vocabulary.vocabulary.isNotEmpty()) {
-            next = vocabulary.vocabulary[currVocabIdx]
+            next = vocabulary.vocabulary[currVocabIdx % vocabulary.vocabulary.size]
             currVocabIdx = (currVocabIdx + 1) % vocabulary.vocabulary.size
         }
         this._learningVocab.value = next.Vocabulary
@@ -75,16 +81,23 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
 
     fun editWord() {
         Log.i("LearningViewModel", "Switched editing vocab")
-        _editToggle.value = !_editToggle.value!!
+        if (_internalEditToggle) {
+            _internalEditToggle = false
+            _editedToggle.value = SingleEvent<Boolean>(true)
+        } else {
+            _internalEditToggle = true
+            _editToggle.value = SingleEvent<Boolean>(true)
+        }
     }
 
     fun wordEdited() {
-        _editToggle.value = false
+        Log.i("LearningViewModel", "Word edited")
         if (_learningVocab.value == null || _translateVocab.value == null)
             return
-        val updatedWord = Word(currVocabIdx, _learningVocab.value!!, _translateVocab.value!!)
+        val updatedIdx = Math.floorMod(currVocabIdx-1, vocabulary.vocabulary.size)
+        val updatedWord = Word(updatedIdx, _learningVocab.value!!, _translateVocab.value!!)
         vmScope.launch {
-            vocabulary.postVocabularyItem(updatedWord)
+            vocabulary.modifyVocabularyItem(updatedWord)
         }
     }
 }

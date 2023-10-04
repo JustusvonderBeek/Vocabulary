@@ -3,6 +3,7 @@ package com.cloudsheeptech.vocabulary.learning
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,16 +29,30 @@ class LearningFragment : Fragment() {
         binding.learningVM = viewModel
         binding.lifecycleOwner = this
 
-        viewModel.editingWord.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                binding.vocabView.inputType = InputType.TYPE_CLASS_TEXT
-                binding.vocabView.focusable = View.FOCUSABLE
-                binding.translateView.inputType = InputType.TYPE_CLASS_TEXT
+        viewModel.editToggle.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let {edit ->
+                edit.let {
+                    Log.i("LearningFragment", "Observer changing focusability")
+                    binding.vocabView.inputType = InputType.TYPE_CLASS_TEXT
+                    binding.vocabView.focusable = View.FOCUSABLE
+                    binding.translateView.inputType = InputType.TYPE_CLASS_TEXT
+                    binding.translateView.focusable = View.FOCUSABLE
+                    binding.editButton.text = "Update word"
+                }
+            }
+        })
 
-                binding.editButton.text = "Update word"
-            } else {
-                binding.vocabView.inputType = InputType.TYPE_NULL
-                binding.translateView.inputType = InputType.TYPE_NULL
+        viewModel.editedToggle.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let {edited ->
+                edited.let {
+                    Log.i("LearningFragment", "Observer changing focusability")
+                    binding.vocabView.inputType = InputType.TYPE_NULL
+                    binding.vocabView.focusable = View.NOT_FOCUSABLE
+                    binding.translateView.inputType = InputType.TYPE_NULL
+                    binding.translateView.focusable = View.NOT_FOCUSABLE
+                    binding.editButton.text = "Start editing word"
+                    viewModel.wordEdited()
+                }
             }
         })
 

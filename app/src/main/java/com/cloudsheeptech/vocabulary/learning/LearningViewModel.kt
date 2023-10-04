@@ -1,26 +1,16 @@
 package com.cloudsheeptech.vocabulary.learning
 
 import android.util.Log
-import android.widget.Toast
-import androidx.databinding.Observable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.data.Word
-import io.ktor.client.HttpClient
-import io.ktor.client.request.get
-import io.ktor.client.request.request
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpMethod
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.io.BufferedInputStream
-import java.lang.Exception
-import java.net.URL
+import kotlinx.coroutines.withContext
 
 class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
 
@@ -43,6 +33,8 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
     val editingWord : LiveData<Boolean>
         get() = _editToggle
 
+    private var currVocabIdx = 0
+
     init {
         _learningVocab.value = "Learning"
         _translateVocab.value = "Lernen"
@@ -53,23 +45,31 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
     fun requestVocabulary() {
         vmScope.launch {
             vocabulary.updateVocabulary()
-            showNewVocabulary()
+            // Modifies data in this class, cannot run on background thread
+            withContext(Dispatchers.Main) {
+                showNextWord()
+            }
         }
     }
 
-    fun showNewVocabulary() {
-        Log.i("LearningViewModel", "Pressed new vocab")
-        val next = vocabulary.getNextVocabulary()
+    fun showNextWord() {
+        Log.i("LearningViewModel", "Get next word")
+        var next = Word(ID = 0, Vocabulary = "Empty", Translation = "Empty")
+        if (vocabulary.vocabulary.isNotEmpty()) {
+            next = vocabulary.vocabulary[currVocabIdx]
+            currVocabIdx = (currVocabIdx + 1) % vocabulary.vocabulary.size
+        }
         this._learningVocab.value = next.Vocabulary
         this._translateVocab.value = next.Translation
-        this._progress.value = (vocabulary.wordIndex + 1).toString() + "/" + vocabulary.size.toString()
+        this._progress.value = (currVocabIdx + 1).toString() + "/" + vocabulary.vocabulary.size.toString()
         Log.i("LearningViewModel", "Updated vocab to: ${_learningVocab.value}")
     }
 
     fun removeWord() {
-        Log.i("LearningViewModel", "Removing word at ${vocabulary.wordIndex}")
+        val removeIdx = Math.floorMod(currVocabIdx-1, vocabulary.vocabulary.size)
+        Log.i("LearningViewModel", "Removing word at $removeIdx - $currVocabIdx - ${vocabulary.vocabulary.size}")
         vmScope.launch {
-            vocabulary.removeVocabularyItem(vocabulary.wordIndex)
+            vocabulary.removeVocabularyItem(removeIdx)
         }
     }
 
@@ -82,9 +82,9 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
         _editToggle.value = false
         if (_learningVocab.value == null || _translateVocab.value == null)
             return
-        val updatedWord = Word(vocabulary.wordIndex, _learningVocab.value!!, _translateVocab.value!!)
+        val updatedWord = Word(currVocabIdx, _learningVocab.value!!, _translateVocab.value!!)
         vmScope.launch {
-            vocabulary.postItemVocabulary(updatedWord)
+            vocabulary.postVocabularyItem(updatedWord)
         }
     }
 }

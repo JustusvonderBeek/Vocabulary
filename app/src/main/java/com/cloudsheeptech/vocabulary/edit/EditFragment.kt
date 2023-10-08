@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.cloudsheeptech.vocabulary.R
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.databinding.FragmentEditBinding
+import java.io.File
 
 class EditFragment : Fragment() {
 
@@ -28,7 +29,8 @@ class EditFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit, container, false)
         // TODO: Fix this vocabulary not being passed around
-        val viewModelFactory = EditViewModelFactory(vocabulary = Vocabulary())
+        val vocabFile = File(requireActivity().applicationContext.filesDir, "vocabulary.json")
+        val viewModelFactory = EditViewModelFactory(vocabulary = Vocabulary(vocabFile))
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[EditViewModel::class.java]
         binding.viewModel = viewModel
         binding.lifecycleOwner = this

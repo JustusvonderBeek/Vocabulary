@@ -1,5 +1,6 @@
 package com.cloudsheeptech.vocabulary.learning
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.InputType
@@ -8,11 +9,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.cloudsheeptech.vocabulary.R
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.databinding.FragmentLearningBinding
+import java.io.File
 
 class LearningFragment : Fragment() {
 
@@ -24,7 +27,8 @@ class LearningFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_learning, container, false)
-        val viewModelFactory = LearningViewModelFactory(Vocabulary())
+        val vocabFile = File(requireActivity().applicationContext.filesDir, "vocabulary.json")
+        val viewModelFactory = LearningViewModelFactory(Vocabulary(vocabFile))
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[LearningViewModel::class.java]
         binding.learningVM = viewModel
         binding.lifecycleOwner = this
@@ -32,12 +36,17 @@ class LearningFragment : Fragment() {
         viewModel.editToggle.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {edit ->
                 edit.let {
-                    Log.i("LearningFragment", "Observer changing focusability")
-                    binding.vocabView.inputType = InputType.TYPE_CLASS_TEXT
+                    Log.i("LearningFragment", "Observer changing to focusable")
                     binding.vocabView.focusable = View.FOCUSABLE
-                    binding.translateView.inputType = InputType.TYPE_CLASS_TEXT
+                    // For whatever reason this API is boolean now?
+                    binding.vocabView.isFocusableInTouchMode = true
                     binding.translateView.focusable = View.FOCUSABLE
+                    binding.translateView.isFocusableInTouchMode = true
                     binding.editButton.text = "Update word"
+
+                    // Show keyboard
+                    val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(binding.vocabView, InputMethodManager.SHOW_IMPLICIT)
                 }
             }
         })
@@ -45,11 +54,11 @@ class LearningFragment : Fragment() {
         viewModel.editedToggle.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {edited ->
                 edited.let {
-                    Log.i("LearningFragment", "Observer changing focusability")
-                    binding.vocabView.inputType = InputType.TYPE_NULL
+                    Log.i("LearningFragment", "Observer changing to no focus")
                     binding.vocabView.focusable = View.NOT_FOCUSABLE
-                    binding.translateView.inputType = InputType.TYPE_NULL
+                    binding.vocabView.isFocusableInTouchMode = false
                     binding.translateView.focusable = View.NOT_FOCUSABLE
+                    binding.translateView.isFocusableInTouchMode = false
                     binding.editButton.text = "Start editing word"
                     viewModel.wordEdited()
                 }

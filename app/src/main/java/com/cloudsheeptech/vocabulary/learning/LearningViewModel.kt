@@ -18,19 +18,15 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
     private val job = Job()
     private val vmScope = CoroutineScope(Dispatchers.Main + job)
 
-    private var _learningVocab = MutableLiveData<String>()
-    val learningVocabulary : LiveData<String>
-        get() = _learningVocab
-
-    private val _translateVocab = MutableLiveData<String>()
-    val translateVocabulary : LiveData<String>
-        get() = _translateVocab
+    val learningVocabulary = MutableLiveData<String>()
+    val translateVocabulary = MutableLiveData<String>()
 
     private val _progress = MutableLiveData<String>()
     val progress : LiveData<String>
         get() = _progress
 
     private var _internalEditToggle = false
+    private var _internalEditAbort = false
 
     private val _editToggle = MutableLiveData<SingleEvent<Boolean>>()
     val editToggle : LiveData<SingleEvent<Boolean>>
@@ -43,8 +39,8 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
     private var currVocabIdx = 0
 
     init {
-        _learningVocab.value = "Learning"
-        _translateVocab.value = "Lernen"
+        learningVocabulary.value = "Click on next"
+        translateVocabulary.value = "Auf weiter klicken"
         _progress.value = "0/0"
     }
 
@@ -60,15 +56,20 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
 
     fun showNextWord() {
         Log.i("LearningViewModel", "Get next word")
+        // Check if current word is edited and abort in that case edit
+        if (_internalEditToggle) {
+            _internalEditAbort = true
+            editWord()
+        }
         var next = Word(ID = 0, Vocabulary = "Empty", Translation = "Empty")
         if (vocabulary.vocabulary.isNotEmpty()) {
             next = vocabulary.vocabulary[currVocabIdx % vocabulary.vocabulary.size]
             currVocabIdx = (currVocabIdx + 1) % vocabulary.vocabulary.size
         }
-        this._learningVocab.value = next.Vocabulary
-        this._translateVocab.value = next.Translation
+        this.learningVocabulary.value = next.Vocabulary
+        this.translateVocabulary.value = next.Translation
         this._progress.value = (currVocabIdx + 1).toString() + "/" + vocabulary.vocabulary.size.toString()
-        Log.i("LearningViewModel", "Updated vocab to: ${_learningVocab.value}")
+        Log.i("LearningViewModel", "Updated vocab to: ${learningVocabulary.value}")
     }
 
     fun removeWord() {
@@ -92,10 +93,18 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
 
     fun wordEdited() {
         Log.i("LearningViewModel", "Word edited")
-        if (_learningVocab.value == null || _translateVocab.value == null)
+        if (learningVocabulary.value == null || learningVocabulary.value == null) {
+            Log.i("LearningViewModel", "One of the two values is empty")
             return
+        }
+        if (_internalEditAbort) {
+            Log.i("LearningViewModel", "Aborting word edit")
+            _internalEditAbort = false
+            return
+        }
         val updatedIdx = Math.floorMod(currVocabIdx-1, vocabulary.vocabulary.size)
-        val updatedWord = Word(updatedIdx, _learningVocab.value!!, _translateVocab.value!!)
+        val updatedWord = Word(updatedIdx, learningVocabulary.value!!, translateVocabulary.value!!)
+        Log.i("LearningViewModel", "Updating word to: $updatedWord")
         vmScope.launch {
             vocabulary.modifyVocabularyItem(updatedWord)
         }

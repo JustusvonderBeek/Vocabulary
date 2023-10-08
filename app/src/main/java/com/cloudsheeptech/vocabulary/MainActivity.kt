@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,7 +33,8 @@ class MainActivity : AppCompatActivity() {
 //        NavigationUI.setupActionBarWithNavController(this, navController)
         botNav.setupWithNavController(navController)
 
-        val vocabulary = Vocabulary()
+        val vocabFile = File(applicationContext.filesDir, "vocabulary.json")
+        val vocabulary = Vocabulary(vocabFile)
     }
 
     override fun onSupportNavigateUp(): Boolean {

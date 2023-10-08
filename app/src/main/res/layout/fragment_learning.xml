@@ -65,15 +65,16 @@
                 android:id="@+id/vocabView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="@{learningVM.learningVocabulary}"
-                android:textAlignment="center"
-                android:inputType="none"
+                android:padding="8dp"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:textSize="24sp" />
+                android:hint="Vocabulary"
+                android:inputType="text"
+                android:text="@={learningVM.learningVocabulary}"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:background="@color/vocabulary_gray"
+                />
 
             <View
                 android:id="@+id/vocabDivider"
@@ -87,13 +88,17 @@
                 android:id="@+id/translateView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="8dp"
                 android:layout_marginBottom="32dp"
-                android:text="@{learningVM.translateVocabulary}"
-                android:inputType="none"
+                android:autofillHints="Vocabulary"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
+                android:hint="Translation"
+                android:inputType="text"
+                android:text="@={learningVM.translateVocabulary}"
                 android:textAlignment="center"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:background="@color/vocabulary_gray"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/nextButton"

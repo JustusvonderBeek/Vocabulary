@@ -5,8 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.cloudsheeptech.vocabulary.SingleEvent
+import com.cloudsheeptech.vocabulary.data.Confidence
+import com.cloudsheeptech.vocabulary.data.LearnWord
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.data.Word
+import com.cloudsheeptech.vocabulary.datastructures.LearningStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -37,6 +40,7 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
         get() = _editedToggle
 
     private var currVocabIdx = 0
+    private var learningList = LearningStack()
 
     init {
         learningVocabulary.value = "Click on next"
@@ -49,22 +53,27 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
             vocabulary.updateVocabulary()
             // Modifies data in this class, cannot run on background thread
             withContext(Dispatchers.Main) {
+                for (word in vocabulary.vocabulary) {
+                    learningList.addWord(LearnWord(word))
+                }
                 showNextWord()
             }
         }
     }
 
     fun showNextWord() {
-        Log.i("LearningViewModel", "Get next word")
+        Log.i("LearningViewModel", "pressed next word")
         // Check if current word is edited and abort in that case edit
         if (_internalEditToggle) {
             _internalEditAbort = true
             editWord()
         }
         var next = Word(ID = 0, Vocabulary = "Empty", Translation = "Empty")
-        if (vocabulary.vocabulary.isNotEmpty()) {
-            next = vocabulary.vocabulary[currVocabIdx % vocabulary.vocabulary.size]
-            currVocabIdx = (currVocabIdx + 1) % vocabulary.vocabulary.size
+        if (learningList.isNotEmpty()) {
+            val tmp = learningList.getNextWord()
+            if (tmp != null) {
+                next = tmp.word
+            }
         }
         this.learningVocabulary.value = next.Vocabulary
         this.translateVocabulary.value = next.Translation

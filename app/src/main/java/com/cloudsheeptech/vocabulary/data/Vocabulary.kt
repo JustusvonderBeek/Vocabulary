@@ -72,7 +72,7 @@ class Vocabulary(private val vocabularyLocation : File) {
         withContext(Dispatchers.IO) {
             client = HttpClient(OkHttp) {
                 engine {
-                    addInterceptor(AuthenticationInterceptor("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJ1c2VySWQiOiJsZXJuZXIifQ.Jg2RA1ctZVb77s8laIEvDmBs0pCu4M-0Mabozqlwnqd2skBYsEVXK0wNJmN8GIiGTzc4JiJt6FzwKkkOTl6EHQ"))
+                    addInterceptor(AuthenticationInterceptor("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJ1c2VySWQiOiJsZXJuZXIifQ.LO23i3B2ggDm4_yEO39HV8as5vwTyzCbfrSfR61faXF73UTYqhkj4_gDp58ZEnE-ONNsc_6BX4j7qwok63vwoA"))
                     config {
                         hostnameVerifier {
                                 _, _ -> true

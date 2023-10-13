@@ -16,6 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{() -> clickListener.onClick(word)}"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:elevation="3dp"
+        android:shadowColor="@color/vocabulary_gray"
+        app:cardCornerRadius="5dp"
         >
 
         <LinearLayout
@@ -26,12 +32,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{word.vocabulary}"/>
+                android:text='@{String.format("%s", word.vocabulary)}'
+                style="@style/WordListItemVocabStyle"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{word.translation}"/>
+                android:text='@{String.format("%s", word.translation)}'
+                style="@style/WordListItemTransStyle"
+                />
 
         </LinearLayout>
 

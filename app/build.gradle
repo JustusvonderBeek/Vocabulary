@@ -14,7 +14,7 @@ android {
         applicationId "com.cloudsheeptech.vocabulary"
         minSdk 29
         targetSdk 33
-        versionCode 8
+        versionCode 10
         versionName "1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

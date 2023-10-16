@@ -51,6 +51,18 @@ class EditFragment : Fragment() {
             }
         })
 
+        binding.refreshLayout.setOnRefreshListener {
+            Log.i("EditFragment", "On refresh called")
+            viewModel.updateVocabulary()
+        }
+
+        viewModel.refreshing.observe(viewLifecycleOwner, Observer {
+            if (!it) {
+                Log.i("EditFragment", "Refreshing finished")
+                binding.refreshLayout.isRefreshing = false
+            }
+        })
+
         return binding.root
     }
 

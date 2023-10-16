@@ -33,7 +33,7 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
     val navigateToEdit : LiveData<Int> get() = _navigateToEdit
 
     private var currVocabIdx = 0
-    private var learningList = LearningStack()
+    private var learningList = LearningStack(vocabulary.wordList)
 
     init {
         learningVocabulary.value = "Click on next"
@@ -55,9 +55,7 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
                 currVocabIdx = next.ID
             }
         } else {
-            for (word in vocabulary.wordList) {
-                learningList.addWord(LearnWord(word))
-            }
+            learningList.addAllWords(vocabulary.wordList)
             showNextWord()
         }
         this.learningVocabulary.value = next.Vocabulary

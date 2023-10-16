@@ -1,6 +1,5 @@
 package com.cloudsheeptech.vocabulary.data
 
-import android.os.Environment
 import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -13,27 +12,35 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.set
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import okhttp3.Credentials
-import okhttp3.Request
 import java.io.File
 import kotlin.Exception
+import kotlin.concurrent.Volatile
 
-class Vocabulary(private val vocabularyLocation : File) {
+class Vocabulary private constructor(private val vocabularyLocation : File) {
 
     private val baseUrl = "https://vocabulary.cloudsheeptech.com:50002/"
 //    private val baseUrl = "https://10.0.2.2:50002/"
-    private var _vocabulary = mutableListOf<Word>()
 
-    val vocabulary : List<Word>
+    private var _vocabulary = mutableListOf<Word>()
+    val wordList : List<Word>
         get() = _vocabulary
 
     private lateinit var client : HttpClient
+
+    companion object {
+
+        @Volatile
+        private var instance : Vocabulary? = null
+
+        fun getInstance(file : File) = instance?: synchronized(this) {
+            instance ?: Vocabulary(file).also { instance = it }
+        }
+    }
 
     init {
         loadVocabularyFromDisk()
@@ -124,7 +131,7 @@ class Vocabulary(private val vocabularyLocation : File) {
     }
 
     suspend fun postVocabulary(vocab : String, translation : String) {
-        val word = Word(vocabulary.size, vocab, translation)
+        val word = Word(wordList.size, vocab, translation)
         postVocabularyItem(word)
     }
 
@@ -181,15 +188,15 @@ class Vocabulary(private val vocabularyLocation : File) {
                 initClient()
             }
             try {
-                if (vocabulary.isEmpty()) {
+                if (wordList.isEmpty()) {
                     Log.i("Vocabulary", "Own vocabulary is empty. Cannot remove")
                     return@withContext
                 }
-                if (id >= vocabulary.size || id < 0) {
-                    Log.e("Vocabulary", "Given index $id is larger than vocabulary size ${vocabulary.size} or invalid")
+                if (id >= wordList.size || id < 0) {
+                    Log.e("Vocabulary", "Given index $id is larger than vocabulary size ${wordList.size} or invalid")
                     return@withContext
                 }
-                val removeWord = vocabulary[id]
+                val removeWord = wordList[id]
                 val rawRemoveWord = Json.encodeToString(removeWord)
                 val response : HttpResponse = client.delete(baseUrl + "words/$id") {
                     setBody(rawRemoveWord)

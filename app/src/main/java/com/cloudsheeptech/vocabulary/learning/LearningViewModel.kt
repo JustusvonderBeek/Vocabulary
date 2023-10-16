@@ -16,13 +16,15 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
+class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
 
     private val job = Job()
     private val vmScope = CoroutineScope(Dispatchers.Main + job)
 
     val learningVocabulary = MutableLiveData<String>()
     val translateVocabulary = MutableLiveData<String>()
+
+    val vocabList = MutableLiveData<MutableList<Word>>()
 
     private val _progress = MutableLiveData<String>()
     val progress : LiveData<String>
@@ -42,10 +44,18 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
     private var currVocabIdx = 0
     private var learningList = LearningStack()
 
+    // Navigation
+    private val _navigateToAddWord = MutableLiveData<Boolean>(false)
+    val navigateToWord : LiveData<Boolean> get() = _navigateToAddWord
+    // ----
+
     init {
         learningVocabulary.value = "Click on next"
         translateVocabulary.value = "Auf weiter klicken"
         _progress.value = "0/0"
+//        for (word in vocabulary.vocabulary) {
+//            vocabList.value!!.add(word)
+//        }
     }
 
     fun requestVocabulary() {
@@ -117,5 +127,13 @@ class LearningViewModel(private val vocabulary: Vocabulary) : ViewModel() {
         vmScope.launch {
             vocabulary.modifyVocabularyItem(updatedWord)
         }
+    }
+
+    fun navigateToAddWord() {
+        _navigateToAddWord.value = true
+    }
+
+    fun onAddWordNavigated() {
+        _navigateToAddWord.value = false
     }
 }

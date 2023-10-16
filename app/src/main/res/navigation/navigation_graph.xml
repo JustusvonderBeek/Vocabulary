@@ -9,14 +9,18 @@
         android:id="@+id/learning"
         android:name="com.cloudsheeptech.vocabulary.learning.LearningFragment"
         android:label="@string/nav_btn_learn"
-        tools:layout="@layout/fragment_learning" />
+        tools:layout="@layout/fragment_learning" >
+        <action
+            android:id="@+id/action_learning_to_editFragment"
+            app:destination="@id/editFragment" />
+    </fragment>
     <fragment
         android:id="@+id/add"
-        android:name="com.cloudsheeptech.vocabulary.add.AddFragment"
+        android:name="com.cloudsheeptech.vocabulary.addedit.AddFragment"
         android:label="@string/nav_btn_add" />
     <fragment
         android:id="@+id/edit"
-        android:name="com.cloudsheeptech.vocabulary.edit.EditFragment"
+        android:name="com.cloudsheeptech.vocabulary.editlist.EditlistFragment"
         android:label="@string/nav_btn_edit" >
         <action
             android:id="@+id/action_edit_to_add"
@@ -24,5 +28,27 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popUpTo="@id/edit" />
+        <action
+            android:id="@+id/action_edit_to_editFragment"
+            app:destination="@id/editFragment"
+            app:popUpTo="@id/edit"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/recap"
+        android:name="com.cloudsheeptech.vocabulary.recap.RecapFragment"
+        android:label="@string/recap_fragment_name"
+        tools:layout="@layout/fragment_recap" >
+        <action
+            android:id="@+id/action_recap_to_editFragment"
+            app:destination="@id/editFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editFragment"
+        android:name="com.cloudsheeptech.vocabulary.edit.EditFragment"
+        android:label="@string/edit_fragment_title">
+        <argument
+            android:name="selectedId"
+            app:argType="integer" />
     </fragment>
 </navigation>

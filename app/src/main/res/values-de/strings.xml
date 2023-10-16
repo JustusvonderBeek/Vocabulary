@@ -13,4 +13,5 @@
     <string name="btn_edit_send">Vokabular updaten</string>
     <string name="btn_edit">Wort bearbeiten</string>
     <string name="btn_rmv_word">Wort entfernen</string>
+    <string name="nav_btn_recap">Abfragen</string>
 </resources>

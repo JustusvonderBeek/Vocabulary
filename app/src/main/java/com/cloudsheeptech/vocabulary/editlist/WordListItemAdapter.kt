@@ -1,4 +1,4 @@
-package com.cloudsheeptech.vocabulary.edit
+package com.cloudsheeptech.vocabulary.editlist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

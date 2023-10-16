@@ -8,7 +8,7 @@
             type="com.cloudsheeptech.vocabulary.data.Word" />
         <variable
             name="clickListener"
-            type="com.cloudsheeptech.vocabulary.edit.WordListItemAdapter.WordListItemListener" />
+            type="com.cloudsheeptech.vocabulary.editlist.WordListItemAdapter.WordListItemListener" />
         
     </data>
 

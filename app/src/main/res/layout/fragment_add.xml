@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.cloudsheeptech.vocabulary.add.AddViewModel" />
+            type="com.cloudsheeptech.vocabulary.addedit.AddViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

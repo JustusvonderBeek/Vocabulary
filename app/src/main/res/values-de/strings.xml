@@ -14,4 +14,6 @@
     <string name="btn_edit">Wort bearbeiten</string>
     <string name="btn_rmv_word">Wort entfernen</string>
     <string name="nav_btn_recap">Abfragen</string>
+    <string name="recap_fragment_name">Abfragen</string>
+    <string name="edit_fragment_title">Word editieren</string>
 </resources>

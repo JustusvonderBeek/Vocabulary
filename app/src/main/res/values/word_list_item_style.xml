@@ -9,5 +9,8 @@
     <style name="WordListItemTransStyle" parent="WordListItemBaseStyle">
         <item name="fontStyle">italic</item>
     </style>
+    <style name="RecapTextViewStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">20sp</item>
+    </style>
 
 </resources>

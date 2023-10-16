@@ -1,4 +1,4 @@
-package com.cloudsheeptech.vocabulary.add
+package com.cloudsheeptech.vocabulary.addedit
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -30,9 +30,10 @@ class AddFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_add, container, false)
-        // TODO: Fix this vocabulary not being passed around
+
         val vocabFile = File(requireActivity().applicationContext.filesDir, "vocabulary.json")
-        val viewModelFactory = AddViewModelFactory(vocabulary = Vocabulary(vocabFile))
+        val vocabulary = Vocabulary.getInstance(vocabFile)
+        val viewModelFactory = AddViewModelFactory(vocabulary)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[AddViewModel::class.java]
         binding.viewModel = viewModel
         binding.lifecycleOwner = this

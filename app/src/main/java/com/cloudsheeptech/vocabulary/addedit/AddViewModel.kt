@@ -1,7 +1,5 @@
-package com.cloudsheeptech.vocabulary.add
+package com.cloudsheeptech.vocabulary.addedit
 
-import android.os.Environment
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +14,7 @@ import kotlinx.coroutines.withContext
 class AddViewModel(val vocabulary: Vocabulary) : ViewModel() {
 
     private val job = Job()
-    private val editVmScope = CoroutineScope(Dispatchers.IO + job)
+    private val addVmScope = CoroutineScope(Dispatchers.IO + job)
 
     val word = MutableLiveData<String>()
     val translation = MutableLiveData<String>()
@@ -26,7 +24,7 @@ class AddViewModel(val vocabulary: Vocabulary) : ViewModel() {
         get() = handledToast
 
     fun addNewWord() {
-        editVmScope.launch {
+        addVmScope.launch {
             if (word.value != null && translation.value != null) {
                 vocabulary.postVocabulary(word.value!!, translation.value!!)
                 resetValues()

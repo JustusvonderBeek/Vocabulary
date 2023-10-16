@@ -7,6 +7,9 @@
         <variable
             name="viewModel"
             type="com.cloudsheeptech.vocabulary.edit.EditViewModel" />
+        <variable
+            name="learnViewModel"
+            type="com.cloudsheeptech.vocabulary.learning.LearningViewModel" />
     </data>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

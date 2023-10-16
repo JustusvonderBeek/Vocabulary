@@ -16,4 +16,8 @@
     <string name="nav_btn_recap">Abfragen</string>
     <string name="recap_fragment_name">Abfragen</string>
     <string name="edit_fragment_title">Word editieren</string>
+    <string name="recap_input_hint">Übersetzung eingeben</string>
+    <string name="recap_correct">Richtig</string>
+    <string name="recap_incorrect">Falsch</string>
+    <string name="recap_check_btn">Überprüfen</string>
 </resources>

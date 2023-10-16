@@ -16,4 +16,8 @@
     <string name="nav_btn_recap">Recap</string>
     <string name="recap_fragment_name">Recap</string>
     <string name="edit_fragment_title">Edit Word</string>
+    <string name="recap_input_hint">Input translation here</string>
+    <string name="recap_correct">Correct</string>
+    <string name="recap_incorrect">Incorrect</string>
+    <string name="recap_check_btn">Check</string>
 </resources>

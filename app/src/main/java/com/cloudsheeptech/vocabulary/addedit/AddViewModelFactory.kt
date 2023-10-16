@@ -1,4 +1,4 @@
-package com.cloudsheeptech.vocabulary.add
+package com.cloudsheeptech.vocabulary.addedit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

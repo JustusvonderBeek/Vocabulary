@@ -2,6 +2,7 @@ package com.cloudsheeptech.vocabulary.edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.cloudsheeptech.vocabulary.addedit.AddViewModel
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 
 class EditViewModelFactory(val vocabulary: Vocabulary) : ViewModelProvider.Factory {
@@ -11,5 +12,4 @@ class EditViewModelFactory(val vocabulary: Vocabulary) : ViewModelProvider.Facto
         }
         throw IllegalArgumentException("Unknown class")
     }
-
 }

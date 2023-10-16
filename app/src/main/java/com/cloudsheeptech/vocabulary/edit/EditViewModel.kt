@@ -3,7 +3,6 @@ package com.cloudsheeptech.vocabulary.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.data.Word
 import kotlinx.coroutines.CoroutineScope
@@ -15,55 +14,38 @@ import kotlinx.coroutines.withContext
 class EditViewModel(val vocabulary: Vocabulary) : ViewModel() {
 
     private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.IO + job)
+    private val editVmScope = CoroutineScope(Dispatchers.IO + job)
 
-    val vocabList = MutableLiveData<MutableList<Word>>()
+    val word = MutableLiveData<String>()
+    val translation = MutableLiveData<String>()
+    private var wordId = -1
 
-    private val _refreshing = MutableLiveData<Boolean>()
-    val refreshing : LiveData<Boolean>
-        get() = _refreshing
+    private val _navigateUp = MutableLiveData<Boolean>(false)
+    val navigateUp : LiveData<Boolean> get() = _navigateUp
 
-    val learningVocabulary = MutableLiveData<String>()
-    val translateVocabulary = MutableLiveData<String>()
-
-    init {
-        vocabList.value = mutableListOf()
-        for (word in vocabulary.vocabulary) {
-            vocabList.value!!.add(word)
-        }
-        _refreshing.value = false
-    }
-
-    fun updateVocabulary() {
-        scope.launch {
-            withContext(Dispatchers.Main) {
-                _refreshing.value = false
-            }
-            vocabulary.updateVocabulary()
-            withContext(Dispatchers.Main) {
-                _refreshing.value = false
-            }
+    fun loadWord(selectedId : Int) {
+        if (selectedId > -1) {
+            val selected = vocabulary.wordList[selectedId]
+            word.value = selected.Vocabulary
+            translation.value = selected.Translation
+            wordId = selected.ID
         }
     }
 
-    fun removeVocabularyItem(id : Int) {
-        scope.launch {
-            withContext(Dispatchers.Main) {
-                _refreshing.value = true
-            }
-            vocabulary.removeVocabularyItem(id)
-            withContext(Dispatchers.Main) {
-                _refreshing.value = false
+    fun editWord() {
+        if (word.value != null && translation.value != null) {
+            val updatedWord = Word(wordId, word.value!!, translation.value!!)
+            editVmScope.launch {
+                vocabulary.modifyVocabularyItem(updatedWord)
+                withContext(Dispatchers.Main) {
+                    _navigateUp.value = true
+                }
             }
         }
     }
 
-    fun editWord(id : Int) {
-        scope.launch {
-            val oldWord = vocabulary.vocabulary[id]
-            val updatedWord = Word(oldWord.ID, learningVocabulary.value!!, translateVocabulary.value!!)
-            vocabulary.postVocabularyItem(updatedWord)
-        }
+    fun wordEdited() {
+        _navigateUp.value = false
     }
 
 }

@@ -17,5 +17,12 @@
     <fragment
         android:id="@+id/edit"
         android:name="com.cloudsheeptech.vocabulary.edit.EditFragment"
-        android:label="@string/nav_btn_edit" />
+        android:label="@string/nav_btn_edit" >
+        <action
+            android:id="@+id/action_edit_to_add"
+            app:destination="@id/add"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popUpTo="@id/edit" />
+    </fragment>
 </navigation>

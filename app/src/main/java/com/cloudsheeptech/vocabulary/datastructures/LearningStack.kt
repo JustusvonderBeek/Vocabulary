@@ -1,10 +1,22 @@
 package com.cloudsheeptech.vocabulary.datastructures
 
 import com.cloudsheeptech.vocabulary.data.LearnWord
+import com.cloudsheeptech.vocabulary.data.Word
 
-class LearningStack {
+class LearningStack(wordlist : List<Word>) {
 
     private val learningStack = mutableListOf<LearnWord>()
+
+    init {
+        addAllWords(wordlist)
+    }
+
+    fun addAllWords(wordlist : List<Word>) {
+        for (word in wordlist) {
+            val learnWord = LearnWord(word)
+            addWord(learnWord)
+        }
+    }
 
     fun addWord(word : LearnWord) {
         var idx = 0

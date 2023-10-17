@@ -1,6 +1,8 @@
 package com.cloudsheeptech.vocabulary.data
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -30,6 +32,9 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
     val wordList : List<Word>
         get() = _vocabulary
 
+    private val _liveWordList = MutableLiveData<MutableList<Word>>()
+    val liveWordList : LiveData<MutableList<Word>> get() = _liveWordList
+
     private lateinit var client : HttpClient
 
     companion object {
@@ -43,6 +48,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
     }
 
     init {
+        _liveWordList.value = mutableListOf()
         loadVocabularyFromDisk()
     }
 
@@ -55,6 +61,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
             val wordList = Json.decodeFromString<List<Word>>(fileContent)
             Log.i("Vocabulary", "Loaded vocabulary with ${wordList.size} words from disk")
             _vocabulary.addAll(wordList)
+            _liveWordList.value!!.addAll(wordList)
         } catch (ex : Exception) {
             Log.i("Vocabulary", "Failed to load vocabulary from disk: $ex")
         }
@@ -107,6 +114,8 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                 val bdy = response.body<List<Word>>()
                 _vocabulary.clear()
                 _vocabulary.addAll(bdy)
+                _liveWordList.value!!.clear()
+                _liveWordList.value!!.addAll(bdy)
                 storeVocabularyToDisk()
 //            Log.i("Vocabulary", "Updated list to $_vocabulary")
                 Log.i("Vocabulary", "Update successful")
@@ -148,6 +157,11 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                 if (response.status != HttpStatusCode.Created) {
                     Log.e("Vocabulary", "Creation of vocabulary not successful")
                 }
+                val bdy = response.body<List<Word>>()
+                _vocabulary.clear()
+                _vocabulary.addAll(bdy)
+                _liveWordList.value!!.clear()
+                _liveWordList.value!!.addAll(bdy)
                 return@withContext
             } catch (ex : Exception) {
                 Log.e("Vocabulary", "Failed to post item:\n$ex")
@@ -172,6 +186,8 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                     val bdy = response.body<List<Word>>()
                     _vocabulary.clear()
                     _vocabulary.addAll(bdy)
+                    _liveWordList.value!!.clear()
+                    _liveWordList.value!!.addAll(bdy)
                     storeVocabularyToDisk()
                 }
                 return@withContext
@@ -207,6 +223,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                 withContext(Dispatchers.Main) {
                     val decoded = Json.decodeFromString<MutableList<Word>>(response.bodyAsText(Charsets.UTF_8))
                     _vocabulary = decoded
+                    _liveWordList.value = decoded
                 }
                 return@withContext
             } catch (ex : Exception) {

@@ -17,14 +17,9 @@ class EditlistViewModel(val vocabulary: Vocabulary) : ViewModel() {
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
-    val vocabList = MutableLiveData<MutableList<Word>>()
-
     private val _refreshing = MutableLiveData<Boolean>()
     val refreshing : LiveData<Boolean>
         get() = _refreshing
-
-    val learningVocabulary = MutableLiveData<String>()
-    val translateVocabulary = MutableLiveData<String>()
 
     // Navigation
     private val _navigateToAddWord = MutableLiveData<Boolean>(false)
@@ -34,10 +29,6 @@ class EditlistViewModel(val vocabulary: Vocabulary) : ViewModel() {
     // ----
 
     init {
-        vocabList.value = mutableListOf()
-        for (word in vocabulary.wordList) {
-            vocabList.value!!.add(word)
-        }
         _refreshing.value = false
     }
 
@@ -47,18 +38,6 @@ class EditlistViewModel(val vocabulary: Vocabulary) : ViewModel() {
                 _refreshing.value = false
             }
             vocabulary.updateVocabulary()
-            withContext(Dispatchers.Main) {
-                _refreshing.value = false
-            }
-        }
-    }
-
-    fun removeVocabularyItem(id : Int) {
-        scope.launch {
-            withContext(Dispatchers.Main) {
-                _refreshing.value = true
-            }
-            vocabulary.removeVocabularyItem(id)
             withContext(Dispatchers.Main) {
                 _refreshing.value = false
             }

@@ -17,7 +17,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.cloudsheeptech.vocabulary.R
+import com.cloudsheeptech.vocabulary.data.SwipeToDeleteHandler
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.databinding.FragmentEditlistBinding
 import com.cloudsheeptech.vocabulary.learning.LearningViewModel
@@ -60,6 +62,7 @@ class EditlistFragment : Fragment(), MenuProvider {
 
         // TODO: Fix this vocabulary not being passed around
         val vocabFile = File(requireActivity().applicationContext.filesDir, "vocabulary.json")
+        val vocabulary = Vocabulary.getInstance(vocabFile)
         val viewModelFactory = EditlistViewModelFactory(vocabulary = Vocabulary.getInstance(vocabFile))
 
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[EditlistViewModel::class.java]
@@ -67,14 +70,17 @@ class EditlistFragment : Fragment(), MenuProvider {
         binding.learnViewModel = learningViewModel
         binding.lifecycleOwner = this
 
-        val adapter = WordListItemAdapter(WordListItemAdapter.WordListItemListener { wordId ->
+
+        val adapter = WordListItemAdapter(vocabulary, WordListItemAdapter.WordListItemListener { wordId ->
             Log.i("EditFragment", "Tapped on word with ID $wordId")
             viewModel.editWord(wordId)
         })
-
         binding.vocabList.adapter = adapter
+        // Allow removing item with swipe
+        val deleteHelper = ItemTouchHelper(SwipeToDeleteHandler(adapter))
+        deleteHelper.attachToRecyclerView(binding.vocabList)
 
-        viewModel.vocabList.observe(viewLifecycleOwner, Observer {
+        viewModel.vocabulary.liveWordList.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
                 adapter.notifyDataSetChanged()

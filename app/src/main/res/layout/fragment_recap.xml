@@ -27,11 +27,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <Spinner
+                android:id="@+id/languageDirectionSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
             <TextView
                 android:id="@+id/vocabularyText"
                 style="@style/RecapTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="@{viewModel.showText}" />
 
             <EditText

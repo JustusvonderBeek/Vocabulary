@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="language_direction">
+        <item>Both directions</item>
+        <item>Spanish to German</item>
+        <item>German to Spanish</item>
+    </string-array>
+</resources>

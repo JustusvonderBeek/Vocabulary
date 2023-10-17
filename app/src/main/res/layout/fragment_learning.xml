@@ -70,7 +70,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="@{() -> learningVM.showNextWord()}"
+                app:icon="@drawable/ic_next"
                 android:text="@string/btn_next_word" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/previousButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> learningVM.showPreviousWord()}"
+                app:icon="@drawable/ic_previous"
+                android:text="@string/btn_previous_word" />
 
             <TextView
                 android:id="@+id/textView"

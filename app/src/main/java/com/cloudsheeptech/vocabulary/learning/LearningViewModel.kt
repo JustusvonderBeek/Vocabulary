@@ -23,8 +23,6 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
     val learningVocabulary = MutableLiveData<String>()
     val translateVocabulary = MutableLiveData<String>()
 
-    val vocabList = MutableLiveData<MutableList<Word>>()
-
     private val _progress = MutableLiveData<String>()
     val progress : LiveData<String>
         get() = _progress
@@ -39,29 +37,44 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
         learningVocabulary.value = "Click on next"
         translateVocabulary.value = "Auf weiter klicken"
         _progress.value = "0/0"
-//        for (word in vocabulary.vocabulary) {
-//            vocabList.value!!.add(word)
-//        }
     }
 
     fun showNextWord() {
         Log.i("LearningViewModel", "pressed next word")
 
         var next = Word(ID = 0, Vocabulary = "Empty", Translation = "Empty")
-        if (learningList.isNotEmpty()) {
-            val tmp = learningList.getNextWord()
-            if (tmp != null) {
-                next = tmp.word
-                currVocabIdx = next.ID
-            }
-        } else {
-            learningList.addAllWords(vocabulary.wordList)
-            showNextWord()
+//        if (learningList.isNotEmpty()) {
+//            val tmp = learningList.getNextWord()
+//            if (tmp != null) {
+//                next = tmp.word
+//                currVocabIdx = next.ID
+//            }
+//        } else {
+//            learningList.addAllWords(vocabulary.wordList)
+//            showNextWord()
+//            return
+//        }
+        if (vocabulary.wordList.isNotEmpty()) {
+            currVocabIdx = Math.floorMod(currVocabIdx + 1, vocabulary.wordList.size)
+            next = vocabulary.wordList[currVocabIdx]
         }
         this.learningVocabulary.value = next.Vocabulary
         this.translateVocabulary.value = next.Translation
         this._progress.value = (currVocabIdx + 1).toString() + "/" + vocabulary.wordList.size.toString()
         Log.i("LearningViewModel", "Updated vocab to: ${learningVocabulary.value}")
+    }
+
+    fun showPreviousWord() {
+        Log.i("LearningViewModel", "pressed previous word")
+
+        var previous = Word(ID = 0, Vocabulary = "No previous word", Translation = "Empty")
+        if (currVocabIdx != -1) {
+            currVocabIdx = Math.floorMod(currVocabIdx - 1, vocabulary.wordList.size)
+            previous = vocabulary.wordList[currVocabIdx]
+        }
+        this.learningVocabulary.value = previous.Vocabulary
+        this.translateVocabulary.value = previous.Translation
+        this._progress.value = (currVocabIdx + -1).toString() + "/" + vocabulary.wordList.size.toString()
     }
 
     fun removeWord() {

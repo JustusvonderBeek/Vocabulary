@@ -22,6 +22,8 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     private val recapList = LearningStack(vocabulary.wordList)
     val currentWord = MutableLiveData<Word>()
 
+    private var _direction = RecapDirection.BOTH
+    private var _directionToggle = false
     private val _result = MutableLiveData<RecapResult>(RecapResult.NONE)
     val result : LiveData<RecapResult> get() = _result
 
@@ -33,6 +35,25 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
         showText.value = currentWord.value!!.Vocabulary
         inputText.value = ""
         hintText.value = ""
+    }
+
+    fun setupDirection(selectionResult : RecapDirection) {
+        if (_directionToggle) {
+            Log.i("RecapViewModel", "Direction already selected")
+            return
+        }
+        when(selectionResult) {
+            RecapDirection.BOTH -> {
+                Log.i("RecapViewModel", "Selected both")
+                _direction = RecapDirection.BOTH
+            }
+            RecapDirection.GERMAN_TO_SPANISH -> {
+                _direction = RecapDirection.GERMAN_TO_SPANISH
+            }
+            RecapDirection.SPANISH_TO_GERMAN -> {
+                _direction = RecapDirection.SPANISH_TO_GERMAN
+            }
+        }
     }
 
     fun compareWords() {
@@ -51,16 +72,26 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
             _result.value = RecapResult.INCORRECT
             return
         }
-        if (!inputText.value.equals(currentWord.value!!.Translation, true)) {
-            _result.value = RecapResult.INCORRECT
-            hintText.value = "Expected: ${currentWord.value!!.Translation}\nGot: ${inputText.value}"
+        if (_direction == RecapDirection.BOTH || _direction == RecapDirection.SPANISH_TO_GERMAN) {
+            if (!inputText.value.equals(currentWord.value!!.Translation, true)) {
+                _result.value = RecapResult.INCORRECT
+                hintText.value = "Expected: ${currentWord.value!!.Translation}\nGot: ${inputText.value}"
+            } else {
+                _result.value = RecapResult.CORRECT
+            }
         } else {
-            _result.value = RecapResult.CORRECT
+            if (!inputText.value.equals(currentWord.value!!.Vocabulary, true)) {
+                _result.value = RecapResult.INCORRECT
+                hintText.value = "Expected: ${currentWord.value!!.Vocabulary}\nGot: ${inputText.value}"
+            } else {
+                _result.value = RecapResult.CORRECT
+            }
         }
         toggleForward = true
     }
 
     fun showNextWord() {
+        _directionToggle = true
         _result.value = RecapResult.NONE
         val next = recapList.getNextWord()
         if (next == null) {
@@ -70,7 +101,11 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
         }
         currentWord.value = next.word
         // Decide what to show
-        showText.value = next.word.Vocabulary
+        if (_direction == RecapDirection.BOTH || _direction == RecapDirection.SPANISH_TO_GERMAN) {
+            showText.value = next.word.Vocabulary
+        } else {
+            showText.value = next.word.Translation
+        }
         inputText.value = ""
         hintText.value = ""
     }

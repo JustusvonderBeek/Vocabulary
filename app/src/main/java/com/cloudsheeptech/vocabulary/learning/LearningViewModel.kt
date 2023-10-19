@@ -9,11 +9,17 @@ import com.cloudsheeptech.vocabulary.data.LearnWord
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.data.Word
 import com.cloudsheeptech.vocabulary.datastructures.LearningStack
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
 
@@ -29,6 +35,9 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
 
     private val _navigateToEdit = MutableLiveData<Int>(-1)
     val navigateToEdit : LiveData<Int> get() = _navigateToEdit
+
+    private val _imageUrl = MutableLiveData<String>()
+    val imageUrl : LiveData<String> get() = _imageUrl
 
     private var currVocabIdx = 0
     private var learningList = LearningStack(vocabulary.wordList)
@@ -57,6 +66,9 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
         if (vocabulary.wordList.isNotEmpty()) {
             currVocabIdx = Math.floorMod(currVocabIdx + 1, vocabulary.wordList.size)
             next = vocabulary.wordList[currVocabIdx]
+            vmScope.launch {
+                loadImageToWord(next.Translation)
+            }
         }
         this.learningVocabulary.value = next.Vocabulary
         this.translateVocabulary.value = next.Translation
@@ -82,6 +94,14 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
         Log.i("LearningViewModel", "Removing word at $removeIdx - $currVocabIdx - ${vocabulary.wordList.size}")
         vmScope.launch {
             vocabulary.removeVocabularyItem(removeIdx)
+        }
+    }
+
+    private suspend fun loadImageToWord(word : String) {
+        withContext(Dispatchers.IO) {
+            val client = HttpClient()
+            val response : HttpResponse = client.get("https://www.google.com/search?tbm=isch&q=$word")
+            Log.i("LearningViewModel","Body:\n${response.bodyAsText(Charsets.UTF_8)}")
         }
     }
 

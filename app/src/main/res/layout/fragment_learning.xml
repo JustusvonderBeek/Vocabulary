@@ -27,19 +27,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
+            <TextView
                 android:id="@+id/vocabView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/vocabulary_gray"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:hint="Vocabulary"
-                android:inputType="text"
                 android:padding="8dp"
                 android:text="@={learningVM.learningVocabulary}"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                style="@style/LearningTextViewStyle" />
 
             <View
                 android:id="@+id/vocabDivider"
@@ -49,21 +44,16 @@
                 android:layout_marginBottom="16dp"
                 android:background="@android:color/darker_gray" />
 
-            <EditText
+            <TextView
                 android:id="@+id/translateView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 android:autofillHints="Vocabulary"
                 android:background="@color/vocabulary_gray"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:hint="Translation"
-                android:inputType="text"
                 android:padding="8dp"
                 android:text="@={learningVM.translateVocabulary}"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                style="@style/LearningTextViewStyle" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/nextButton"
@@ -88,6 +78,13 @@
                 android:layout_marginTop="16dp"
                 android:text="@{learningVM.progress}"
                 android:textAlignment="center" />
+
+            <ImageView
+                android:id="@+id/wordImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -52,9 +52,9 @@
             app:argType="integer" />
     </fragment>
     <fragment
-        android:id="@+id/recapStartFragment"
+        android:id="@+id/recapStart"
         android:name="com.cloudsheeptech.vocabulary.recap.RecapStartFragment"
-        android:label="fragment_recap_start"
+        android:label="Start Recap"
         tools:layout="@layout/fragment_recap_start" >
         <action
             android:id="@+id/action_recapStartFragment_to_recap"

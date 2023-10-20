@@ -38,7 +38,6 @@
                 android:id="@+id/vocabView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/vocabulary_gray"
                 android:padding="8dp"
                 android:text="@={learningVM.learningVocabulary}"
                 style="@style/LearningTextViewStyle" />
@@ -57,7 +56,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 android:autofillHints="Vocabulary"
-                android:background="@color/vocabulary_gray"
                 android:padding="8dp"
                 android:text="@={learningVM.translateVocabulary}"
                 style="@style/LearningTextViewStyle" />

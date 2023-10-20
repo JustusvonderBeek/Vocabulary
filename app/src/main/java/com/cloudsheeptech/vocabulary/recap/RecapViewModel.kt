@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.cloudsheeptech.vocabulary.data.LearnWord
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.data.Word
 import com.cloudsheeptech.vocabulary.datastructures.LearningStack
@@ -63,6 +64,20 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
         }
     }
 
+    fun updateWordCorrect(word : Word) {
+        vocabulary.updateCorrectRepeat(word)
+    }
+
+    fun updateWordIncorrect(word : Word) {
+        vocabulary.updateIncorrectRepeat(word)
+    }
+
+    fun countAsCorrect() {
+        // TODO: Implement correctly
+        Log.i("RecapViewModel", "Counted as correct")
+        updateWordCorrect(currentWord.value!!)
+    }
+
     fun compareWords() {
         if (toggleForward) {
             toggleForward = false
@@ -72,21 +87,26 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
         if (inputText.value.isNullOrEmpty()) {
             Log.i("RecapViewModel", "Given input is empty")
             _result.value = RecapResult.INCORRECT
+            updateWordIncorrect(currentWord.value!!)
             return
         }
         if (_direction == RecapDirection.BOTH || _direction == RecapDirection.SPANISH_TO_GERMAN) {
             if (!inputText.value.equals(currentWord.value!!.Translation, true)) {
                 _result.value = RecapResult.INCORRECT
                 hintText.value = "Expected: ${currentWord.value!!.Translation}\nGot: ${inputText.value}"
+                updateWordIncorrect(currentWord.value!!)
             } else {
                 _result.value = RecapResult.CORRECT
+                updateWordCorrect(currentWord.value!!)
             }
         } else {
             if (!inputText.value.equals(currentWord.value!!.Vocabulary, true)) {
                 _result.value = RecapResult.INCORRECT
                 hintText.value = "Expected: ${currentWord.value!!.Vocabulary}\nGot: ${inputText.value}"
+                updateWordIncorrect(currentWord.value!!)
             } else {
                 _result.value = RecapResult.CORRECT
+                updateWordCorrect(currentWord.value!!)
             }
         }
         toggleForward = true

@@ -45,22 +45,26 @@ class RecapFragment : Fragment() {
                     binding.correctResultText.visibility = View.VISIBLE
                     binding.incorrectResultText.visibility = View.GONE
                     binding.hintText.visibility = View.GONE
+                    binding.countAsCorrectButton.visibility = View.GONE
                 }
                 RecapResult.INCORRECT -> {
                     binding.correctResultText.visibility = View.GONE
                     binding.incorrectResultText.visibility = View.VISIBLE
                     binding.hintText.visibility = View.VISIBLE
+                    binding.countAsCorrectButton.visibility = View.VISIBLE
                 }
                 RecapResult.NONE -> {
                     binding.correctResultText.visibility = View.GONE
                     binding.incorrectResultText.visibility = View.GONE
                     binding.hintText.visibility = View.GONE
+                    binding.countAsCorrectButton.visibility = View.GONE
                 }
                 null -> {
                     Log.e("RecapFragment", "Given result is null.")
                     binding.correctResultText.visibility = View.GONE
                     binding.incorrectResultText.visibility = View.GONE
                     binding.hintText.visibility = View.GONE
+                    binding.countAsCorrectButton.visibility = View.GONE
                 }
             }
         })

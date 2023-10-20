@@ -71,6 +71,16 @@
                 android:text="@{viewModel.hintText}"
                 android:visibility="gone" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/countAsCorrectButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Count as correct"
+                android:layout_marginTop="16dp"
+                android:onClick="@{() -> viewModel.countAsCorrect()}"
+                android:visibility="gone"
+                />
+
             <Button
                 android:id="@+id/checkButton"
                 android:layout_width="match_parent"

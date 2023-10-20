@@ -9,7 +9,7 @@
         android:title="@string/nav_btn_learn" />
 
     <item
-        android:id="@+id/recap"
+        android:id="@+id/recapStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/ic_recap"

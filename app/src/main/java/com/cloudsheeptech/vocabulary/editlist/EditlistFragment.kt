@@ -95,6 +95,7 @@ class EditlistFragment : Fragment(), MenuProvider {
         viewModel.refreshing.observe(viewLifecycleOwner, Observer {
             if (!it) {
                 Log.i("EditFragment", "Refreshing finished")
+                adapter.notifyDataSetChanged()
                 binding.refreshLayout.isRefreshing = false
             }
         })

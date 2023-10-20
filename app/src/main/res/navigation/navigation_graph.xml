@@ -51,4 +51,13 @@
             android:name="selectedId"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/recapStartFragment"
+        android:name="com.cloudsheeptech.vocabulary.recap.RecapStartFragment"
+        android:label="fragment_recap_start"
+        tools:layout="@layout/fragment_recap_start" >
+        <action
+            android:id="@+id/action_recapStartFragment_to_recap"
+            app:destination="@id/recap" />
+    </fragment>
 </navigation>

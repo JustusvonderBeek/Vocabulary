@@ -17,6 +17,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.cloudsheeptech.vocabulary.R
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.databinding.FragmentLearningBinding
@@ -63,6 +64,14 @@ class LearningFragment : Fragment(), MenuProvider {
             if (selectedId > 0) {
                 findNavController().navigate(LearningFragmentDirections.actionLearningToEditFragment(selectedId))
                 viewModel.navigatedToEditWord()
+            }
+        })
+
+        viewModel.imageUrl.observe(viewLifecycleOwner, Observer { url ->
+            try {
+                Glide.with(this).load(url).into(binding.wordImage)
+            } catch (ex : Exception) {
+                Log.i("LearningFragment", "Failed to load URL: $url")
             }
         })
 

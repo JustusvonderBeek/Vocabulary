@@ -5,7 +5,7 @@
     <string name="btn_get_data">Vokabeln abrufen</string>
     <string name="btn_next_word">Nächstes Wort</string>
     <string name="nav_btn_learn">Lernen</string>
-    <string name="nav_btn_edit">Vokabeln bearbeiten</string>
+    <string name="nav_btn_edit">Bearbeiten</string>
     <string name="vocab_ipt_hint">Zu lernende Vokabel</string>
     <string name="trans_ipt_hint">Übersetzung</string>
     <string name="btn_vocab_snd">Vokabel senden</string>
@@ -20,4 +20,5 @@
     <string name="recap_correct">Richtig</string>
     <string name="recap_incorrect">Falsch</string>
     <string name="recap_check_btn">Überprüfen</string>
+    <string name="btn_previous_word">Vorheriges Wort</string>
 </resources>

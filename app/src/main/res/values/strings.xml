@@ -5,12 +5,12 @@
     <string name="btn_get_data">Get Data</string>
     <string name="btn_next_word">Next Word</string>
     <string name="nav_btn_learn">Learning</string>
-    <string name="nav_btn_edit">Edit vocabulary</string>
+    <string name="nav_btn_edit">Edit</string>
     <string name="vocab_ipt_hint">Vocabulary</string>
     <string name="trans_ipt_hint">Translation</string>
-    <string name="btn_vocab_snd">Sent to vocabulary</string>
-    <string name="nav_btn_add">Add vocabulary</string>
-    <string name="btn_edit_send">Update vocabulary</string>
+    <string name="btn_vocab_snd">Push word</string>
+    <string name="nav_btn_add">Add word</string>
+    <string name="btn_edit_send">Update word</string>
     <string name="btn_edit">Edit word</string>
     <string name="btn_rmv_word">Remove Word</string>
     <string name="nav_btn_recap">Recap</string>
@@ -20,4 +20,5 @@
     <string name="recap_correct">Correct</string>
     <string name="recap_incorrect">Incorrect</string>
     <string name="recap_check_btn">Check</string>
+    <string name="btn_previous_word">Previous Word</string>
 </resources>

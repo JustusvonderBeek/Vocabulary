@@ -140,7 +140,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
     }
 
     suspend fun postVocabulary(vocab : String, translation : String) {
-        val word = Word(wordList.size, vocab, translation)
+        val word = Word(wordList.size, vocab, translation, Confidence.NEW, 0)
         postVocabularyItem(word)
     }
 
@@ -231,4 +231,13 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
             }
         }
     }
+
+    fun updateCorrectRepeat(word : Word) {
+        Log.i("Vocabulary", "Word $word correctly repeated")
+    }
+
+    fun updateIncorrectRepeat(word : Word) {
+        Log.i("Vocabulary", "Word $word incorrectly repeated")
+    }
+
 }

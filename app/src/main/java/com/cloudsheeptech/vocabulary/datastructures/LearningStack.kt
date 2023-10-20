@@ -15,6 +15,15 @@ class LearningStack {
     private val sortedItems = mutableListOf<LearnWord>()
     private val itemMap = HashMap<Confidence, Stack<LearnWord>>(5)
 
+    fun addAllWords(items : List<Word>) {
+        val convertedItems = mutableListOf<LearnWord>()
+        for(item in items) {
+            val converted = LearnWord(item, Confidence.NEW, 0)
+            convertedItems.add(converted)
+        }
+        addAll(convertedItems)
+    }
+
     fun addAll(items : List<LearnWord>) {
         val sorted = items.sortedDescending()
         println("Sorted: $sorted")

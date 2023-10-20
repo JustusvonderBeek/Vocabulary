@@ -21,4 +21,5 @@
     <string name="recap_incorrect">Incorrecto</string>
     <string name="recap_check_btn">Consulte</string>
     <string name="btn_previous_word">Palabra anterior</string>
+    <string name="btn_start_recap">Iniciar repetición</string>
 </resources>

@@ -29,6 +29,7 @@ class LearningStack {
         println("Sorted: $sorted")
         sortedItems.addAll(sorted)
         initMap(items)
+        Log.i("LearningStack", "Added ${sortedItems.size} items")
     }
 
     private fun initMap(items: List<LearnWord>) {
@@ -76,8 +77,8 @@ class LearningStack {
             }
         }
         println("Distribution wants:\nperf: $perf, good: $good, bad: $bad, poor: $poor, new: $new")
-        val shareList = mutableListOf(new, poor, bad, good, perf)
-        val searchOrder = mutableListOf(Confidence.PERFECT, Confidence.GOOD, Confidence.BAD, Confidence.POOR, Confidence.NEW).reversed()
+        val shareList = mutableListOf(perf, good, bad, poor, new)
+        val searchOrder = mutableListOf(Confidence.PERFECT, Confidence.GOOD, Confidence.BAD, Confidence.POOR, Confidence.NEW)
         var searchedConfidence : Confidence
         var missingItems = 0
         for ((idx,share) in shareList.withIndex()) {

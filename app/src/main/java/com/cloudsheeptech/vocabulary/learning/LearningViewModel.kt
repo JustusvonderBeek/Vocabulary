@@ -40,7 +40,7 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
     val imageUrl : LiveData<String> get() = _imageUrl
 
     private var currVocabIdx = 0
-    private var learningList = LearningStack(vocabulary.wordList)
+    private var learningList = LearningStack()
 
     init {
         learningVocabulary.value = "Click on next"

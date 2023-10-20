@@ -19,7 +19,7 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     val showText = MutableLiveData<String>()
     val inputText = MutableLiveData<String>()
     val hintText = MutableLiveData<String>()
-    private val recapList = LearningStack(vocabulary.wordList)
+    private val recapList = LearningStack()
     val currentWord = MutableLiveData<Word>()
 
     private var _direction = RecapDirection.BOTH
@@ -27,7 +27,12 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     private val _result = MutableLiveData<RecapResult>(RecapResult.NONE)
     val result : LiveData<RecapResult> get() = _result
 
-    private var init = false
+    private val _navigateToRecap = MutableLiveData<Boolean>(false)
+    val navigateToRecap : LiveData<Boolean> get() = _navigateToRecap
+
+    private val _navigateToRecapStart = MutableLiveData<Boolean>(false)
+    val navigateToRecapStart : LiveData<Boolean> get() = _navigateToRecapStart
+
     private var toggleForward = false
 
     init {
@@ -42,26 +47,23 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
             Log.i("RecapViewModel", "Direction already selected")
             return
         }
-        when(selectionResult) {
+        _direction = when(selectionResult) {
             RecapDirection.BOTH -> {
                 Log.i("RecapViewModel", "Selected both")
-                _direction = RecapDirection.BOTH
+                RecapDirection.BOTH
             }
             RecapDirection.GERMAN_TO_SPANISH -> {
-                _direction = RecapDirection.GERMAN_TO_SPANISH
+                Log.i("RecapViewModel", "Selected german to spanish")
+                RecapDirection.GERMAN_TO_SPANISH
             }
             RecapDirection.SPANISH_TO_GERMAN -> {
-                _direction = RecapDirection.SPANISH_TO_GERMAN
+                Log.i("RecapViewModel", "Selected spanish to german")
+                RecapDirection.SPANISH_TO_GERMAN
             }
         }
     }
 
     fun compareWords() {
-        if (!init) {
-            init = true
-            showNextWord()
-            return
-        }
         if (toggleForward) {
             toggleForward = false
             showNextWord()
@@ -91,12 +93,11 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     }
 
     fun showNextWord() {
-        _directionToggle = true
         _result.value = RecapResult.NONE
         val next = recapList.getNextWord()
         if (next == null) {
             // Nothing more to show, navigate to home I guess
-            // TODO:
+            navigateToRecapStart()
             return
         }
         currentWord.value = next.word
@@ -108,6 +109,31 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
         }
         inputText.value = ""
         hintText.value = ""
+    }
+
+    private fun prepareRecap() {
+        recapList.addAllWords(vocabulary.wordList)
+        recapList.selectItems(10)
+    }
+
+    fun navigateToRecap() {
+        prepareRecap()
+        showNextWord()
+        _navigateToRecap.value = true
+    }
+
+    fun onRecapNavigated() {
+        _directionToggle = true
+        _navigateToRecap.value = false
+    }
+
+    fun navigateToRecapStart() {
+        _directionToggle = false
+        _navigateToRecapStart.value = true
+    }
+
+    fun onStartNavigated() {
+        _navigateToRecapStart.value = false
     }
 
 }

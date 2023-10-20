@@ -12,6 +12,8 @@ import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.databinding.ActivityMainBinding
 import com.cloudsheeptech.vocabulary.learning.LearningViewModel
 import com.cloudsheeptech.vocabulary.learning.LearningViewModelFactory
+import com.cloudsheeptech.vocabulary.recap.RecapViewModel
+import com.cloudsheeptech.vocabulary.recap.RecapViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.File
 
@@ -20,7 +22,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
 
     // Create the vocabulary here and pass the data around the app so that every fragment share the same data
-    private lateinit var learningViewModel : LearningViewModel
+//    private lateinit var learningViewModel : LearningViewModel
+    private lateinit var recapViewModel : RecapViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +38,10 @@ class MainActivity : AppCompatActivity() {
 
         val vocabularyFile = File(applicationContext.filesDir, "vocabulary.json")
         val vocabulary = Vocabulary.getInstance(vocabularyFile)
-        val activityViewModel by viewModels<LearningViewModel> { LearningViewModelFactory(vocabulary) }
-        learningViewModel = activityViewModel
+//        val activityViewModel by viewModels<LearningViewModel> { LearningViewModelFactory(vocabulary) }
+//        learningViewModel = activityViewModel
+        val actViewModel by viewModels<RecapViewModel> { RecapViewModelFactory(vocabulary) }
+        recapViewModel = actViewModel
     }
 
     override fun onSupportNavigateUp(): Boolean {

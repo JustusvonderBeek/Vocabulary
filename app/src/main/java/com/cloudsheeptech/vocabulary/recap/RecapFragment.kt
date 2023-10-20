@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.cloudsheeptech.vocabulary.R
 import com.cloudsheeptech.vocabulary.addedit.AddViewModelFactory
 import com.cloudsheeptech.vocabulary.data.Vocabulary
@@ -18,21 +20,10 @@ import com.cloudsheeptech.vocabulary.databinding.FragmentAddBinding
 import com.cloudsheeptech.vocabulary.databinding.FragmentRecapBinding
 import java.io.File
 
-class RecapFragment : Fragment(), AdapterView.OnItemSelectedListener {
+class RecapFragment : Fragment() {
 
     private lateinit var binding : FragmentRecapBinding
-    private lateinit var viewModel : RecapViewModel
-
-
-    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        Log.i("RecapFragment", "Selection was ${p0!!.selectedItemPosition}")
-        viewModel.setupDirection(RecapDirection.fromInt(p0!!.selectedItemPosition))
-    }
-
-    override fun onNothingSelected(p0: AdapterView<*>?) {
-        Log.i("RecapFragment", "Nothing selected. Handling default case")
-        viewModel.setupDirection(RecapDirection.BOTH)
-    }
+    private val viewModel : RecapViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,20 +36,8 @@ class RecapFragment : Fragment(), AdapterView.OnItemSelectedListener {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recap, container, false)
 
-        val vocabFile = File(requireActivity().applicationContext.filesDir, "vocabulary.json")
-        val vocabulary = Vocabulary.getInstance(vocabFile)
-        val viewModelFactory = RecapViewModelFactory(vocabulary)
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[RecapViewModel::class.java]
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-
-        // Populate the spinner with the direction
-        val spinnner = binding.languageDirectionSpinner
-        ArrayAdapter.createFromResource(requireContext(), R.array.language_direction, android.R.layout.simple_spinner_item).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinnner.adapter = adapter
-        }
-        spinnner.onItemSelectedListener = this
 
         viewModel.result.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -86,7 +65,12 @@ class RecapFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
         })
 
-
+        viewModel.navigateToRecapStart.observe(viewLifecycleOwner, Observer { navigate ->
+            if (navigate) {
+                findNavController().navigateUp()
+                viewModel.onStartNavigated()
+            }
+        })
 
         return binding.root
     }

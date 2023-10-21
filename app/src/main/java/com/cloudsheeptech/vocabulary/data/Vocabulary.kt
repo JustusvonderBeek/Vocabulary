@@ -32,6 +32,11 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
     val wordList : List<Word>
         get() = _vocabulary
 
+    private val jsonHandler = Json {
+        encodeDefaults = true
+        ignoreUnknownKeys = false
+    }
+
     private val _liveWordList = MutableLiveData<MutableList<Word>>()
     val liveWordList : LiveData<MutableList<Word>> get() = _liveWordList
 
@@ -52,13 +57,38 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
         loadVocabularyFromDisk()
     }
 
+    private fun convertListWordV1ToWord(items : List<WordV1>) : List<Word> {
+        val convertedList = mutableListOf<Word>()
+        for (item in items) {
+            convertedList.add(convertWordV1ToWord(item))
+        }
+        return convertedList
+    }
+
+    private fun convertWordV1ToWord(input: WordV1): Word {
+        return Word(
+            input.ID,
+            input.Vocabulary,
+            input.Translation,
+            Confidence.toInt(input.Confidence),
+            input.Repeat
+        )
+    }
+
     private fun loadVocabularyFromDisk() {
         try {
             val file = vocabularyLocation
             val reader = file.reader(Charsets.UTF_8)
             val fileContent = reader.readText()
             reader.close()
-            val wordList = Json.decodeFromString<List<Word>>(fileContent)
+            var wordList : List<Word>
+            try {
+                wordList = jsonHandler.decodeFromString<List<Word>>(fileContent)
+            } catch (ex : Exception) {
+                Log.i("Vocabulary", "The data given is in an old format. Converting...")
+                val oldWordList = jsonHandler.decodeFromString<List<WordV1>>(fileContent)
+                wordList = convertListWordV1ToWord(oldWordList)
+            }
             Log.i("Vocabulary", "Loaded vocabulary with ${wordList.size} words from disk")
             _vocabulary.addAll(wordList)
             _liveWordList.value!!.addAll(wordList)
@@ -72,7 +102,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
             try {
                 val file = vocabularyLocation
                 val writer = file.writer(Charsets.UTF_8)
-                val stringVocab = Json.encodeToString(_vocabulary)
+                val stringVocab = jsonHandler.encodeToString(_vocabulary)
                 writer.write(stringVocab)
                 writer.close()
                 Log.i("Vocabulary", "Stored vocabulary to disk")
@@ -140,7 +170,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
     }
 
     suspend fun postVocabulary(vocab : String, translation : String) {
-        val word = Word(wordList.size, vocab, translation, Confidence.NEW, 0)
+        val word = Word(wordList.size, vocab, translation, 0, 0)
         postVocabularyItem(word)
     }
 
@@ -150,7 +180,8 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
             if (!init)
                 initClient()
             try {
-                val rawWord = Json.encodeToString(word)
+                val rawWord = jsonHandler.encodeToString(word)
+                Log.i("Vocabulary", "Serialized word is $rawWord")
                 val response : HttpResponse = client.post(baseUrl + "words") {
                     setBody(rawWord)
                 }
@@ -176,7 +207,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                 initClient()
             try {
                 Log.i("Vocabulary", "Got word for modification: $word")
-                val rawWord = Json.encodeToString(word)
+                val rawWord = jsonHandler.encodeToString(word)
                 val response : HttpResponse = client.post(baseUrl + "words/" + word.ID) {
                     setBody(rawWord)
                 }
@@ -213,7 +244,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                     return@withContext
                 }
                 val removeWord = wordList[id]
-                val rawRemoveWord = Json.encodeToString(removeWord)
+                val rawRemoveWord = jsonHandler.encodeToString(removeWord)
                 val response : HttpResponse = client.delete(baseUrl + "words/$id") {
                     setBody(rawRemoveWord)
                 }
@@ -221,7 +252,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                     Log.e("Vocabulary", "Item not successfully removed")
                 }
                 withContext(Dispatchers.Main) {
-                    val decoded = Json.decodeFromString<MutableList<Word>>(response.bodyAsText(Charsets.UTF_8))
+                    val decoded = jsonHandler.decodeFromString<MutableList<Word>>(response.bodyAsText(Charsets.UTF_8))
                     _vocabulary = decoded
                     _liveWordList.value = decoded
                 }
@@ -232,12 +263,34 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
         }
     }
 
-    fun updateCorrectRepeat(word : Word) {
+    suspend fun updateCorrectRepeat(word : Word) {
         Log.i("Vocabulary", "Word $word correctly repeated")
+        word.Repeat += 1
+        word.Confidence = (word.Confidence + 2).coerceAtMost(100)
+        _vocabulary.removeAt(word.ID)
+        _vocabulary.add(word.ID, word)
+        _liveWordList.value!!.clear()
+        _liveWordList.value!!.addAll(_vocabulary)
+        Log.i("Vocabulary", "Updated word to $word")
+        Log.i("Vocabulary", "Updated vocabulary to $wordList")
+        withContext(Dispatchers.IO) {
+            storeVocabularyToDisk()
+        }
     }
 
-    fun updateIncorrectRepeat(word : Word) {
+    suspend fun updateIncorrectRepeat(word : Word) {
         Log.i("Vocabulary", "Word $word incorrectly repeated")
+        word.Repeat += 1
+        word.Confidence = (word.Confidence - 2).coerceAtLeast(1)
+        _vocabulary.removeAt(word.ID)
+        _vocabulary.add(word.ID, word)
+        _liveWordList.value!!.clear()
+        _liveWordList.value!!.addAll(_vocabulary)
+        Log.i("Vocabulary", "Updated word to $word")
+        Log.i("Vocabulary", "Updated vocabulary to $wordList")
+        withContext(Dispatchers.IO) {
+            storeVocabularyToDisk()
+        }
     }
 
 }

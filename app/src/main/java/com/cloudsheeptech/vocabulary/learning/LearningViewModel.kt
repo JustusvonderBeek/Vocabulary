@@ -4,8 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.cloudsheeptech.vocabulary.SingleEvent
-import com.cloudsheeptech.vocabulary.data.LearnWord
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.data.Word
 import com.cloudsheeptech.vocabulary.datastructures.LearningStack
@@ -18,8 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
 
 class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
 

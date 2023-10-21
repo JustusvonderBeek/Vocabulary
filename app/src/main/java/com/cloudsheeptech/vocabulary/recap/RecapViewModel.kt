@@ -4,13 +4,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.cloudsheeptech.vocabulary.data.LearnWord
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.data.Word
 import com.cloudsheeptech.vocabulary.datastructures.LearningStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
 
@@ -35,6 +35,7 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     val navigateToRecapStart : LiveData<Boolean> get() = _navigateToRecapStart
 
     private var toggleForward = false
+    private var countCorrect = false
 
     init {
         currentWord.value = Word(0, "Press check to start", "Press check to start")
@@ -64,18 +65,22 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
         }
     }
 
-    fun updateWordCorrect(word : Word) {
-        vocabulary.updateCorrectRepeat(word)
+    private fun updateWordCorrect(word : Word) {
+        recapScope.launch {
+            vocabulary.updateCorrectRepeat(word)
+        }
     }
 
-    fun updateWordIncorrect(word : Word) {
-        vocabulary.updateIncorrectRepeat(word)
+    private fun updateWordIncorrect(word : Word) {
+        recapScope.launch {
+            vocabulary.updateIncorrectRepeat(word)
+        }
     }
 
     fun countAsCorrect() {
-        // TODO: Implement correctly
         Log.i("RecapViewModel", "Counted as correct")
-        updateWordCorrect(currentWord.value!!)
+//        _result.value = RecapResult.CORRECT
+//        updateWordCorrect(currentWord.value!!)
     }
 
     fun compareWords() {
@@ -120,19 +125,19 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
             navigateToRecapStart()
             return
         }
-        currentWord.value = next.word
+        currentWord.value = next!!
         // Decide what to show
         if (_direction == RecapDirection.BOTH || _direction == RecapDirection.SPANISH_TO_GERMAN) {
-            showText.value = next.word.Vocabulary
+            showText.value = next.Vocabulary
         } else {
-            showText.value = next.word.Translation
+            showText.value = next.Translation
         }
         inputText.value = ""
         hintText.value = ""
     }
 
     private fun prepareRecap() {
-        recapList.addAllWords(vocabulary.wordList)
+        recapList.addAll(vocabulary.wordList)
         recapList.selectItems(10)
     }
 

@@ -2,29 +2,18 @@ package com.cloudsheeptech.vocabulary.datastructures
 
 import android.util.Log
 import com.cloudsheeptech.vocabulary.data.Confidence
-import com.cloudsheeptech.vocabulary.data.LearnWord
 import com.cloudsheeptech.vocabulary.data.Word
-import io.ktor.util.getDigestFunction
 import java.util.Stack
 import kotlin.math.ceil
 import kotlin.math.floor
 
 class LearningStack {
 
-    private val learningStack = mutableListOf<LearnWord>()
-    private val sortedItems = mutableListOf<LearnWord>()
-    private val itemMap = HashMap<Confidence, Stack<LearnWord>>(5)
+    private val learningStack = mutableListOf<Word>()
+    private val sortedItems = mutableListOf<Word>()
+    private val itemMap = HashMap<Confidence, Stack<Word>>(5)
 
-    fun addAllWords(items : List<Word>) {
-        val convertedItems = mutableListOf<LearnWord>()
-        for(item in items) {
-            val converted = LearnWord(item, Confidence.NEW, 0)
-            convertedItems.add(converted)
-        }
-        addAll(convertedItems)
-    }
-
-    fun addAll(items : List<LearnWord>) {
+    fun addAll(items : List<Word>) {
         val sorted = items.sortedDescending()
         println("Sorted: $sorted")
         sortedItems.addAll(sorted)
@@ -32,16 +21,16 @@ class LearningStack {
         Log.i("LearningStack", "Added ${sortedItems.size} items")
     }
 
-    private fun initMap(items: List<LearnWord>) {
+    private fun initMap(items: List<Word>) {
         itemMap.clear()
         for (item in items) {
-            if (itemMap[item.confidence] == null)
-                itemMap[item.confidence] = Stack()
-            itemMap[item.confidence]!!.add(item)
+            if (itemMap[Confidence.convertIntToConfidence(item.Confidence)] == null)
+                itemMap[Confidence.convertIntToConfidence(item.Confidence)] = Stack()
+            itemMap[Confidence.convertIntToConfidence(item.Confidence)]!!.add(item)
         }
     }
 
-    private fun searchItemWithConfidence(confidence: Confidence) : LearnWord? {
+    private fun searchItemWithConfidence(confidence: Confidence) : Word? {
         if (itemMap[confidence] == null || itemMap[confidence]!!.isEmpty())
             return null
         return itemMap[confidence]!!.removeFirst()
@@ -96,10 +85,11 @@ class LearningStack {
         }
         println("Selected: $learningStack")
         println("Missing total of $missingItems items")
+        learningStack.shuffle()
         return learningStack.size
     }
 
-    fun getNextWord() : LearnWord? {
+    fun getNextWord() : Word? {
         return learningStack.removeFirstOrNull()
     }
 

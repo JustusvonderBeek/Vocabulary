@@ -47,6 +47,12 @@ class RecapFragment : Fragment() {
                     binding.hintText.visibility = View.GONE
                     binding.countAsCorrectButton.visibility = View.GONE
                 }
+                RecapResult.COUNT_AS_CORRECT -> {
+                    binding.correctResultText.visibility = View.VISIBLE
+                    binding.incorrectResultText.visibility = View.GONE
+                    binding.hintText.visibility = View.GONE
+                    binding.countAsCorrectButton.visibility = View.GONE
+                }
                 RecapResult.INCORRECT -> {
                     binding.correctResultText.visibility = View.GONE
                     binding.incorrectResultText.visibility = View.VISIBLE

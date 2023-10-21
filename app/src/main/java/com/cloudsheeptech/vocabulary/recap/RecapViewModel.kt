@@ -79,8 +79,9 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
 
     fun countAsCorrect() {
         Log.i("RecapViewModel", "Counted as correct")
-//        _result.value = RecapResult.CORRECT
-//        updateWordCorrect(currentWord.value!!)
+        _result.value = RecapResult.COUNT_AS_CORRECT
+        currentWord.value!!.Repeat -= 1
+        updateWordCorrect(currentWord.value!!)
     }
 
     fun compareWords() {

@@ -22,4 +22,5 @@
     <string name="recap_check_btn">Überprüfen</string>
     <string name="btn_previous_word">Vorheriges Wort</string>
     <string name="btn_start_recap">Wiederholung anfangen</string>
+    <string name="notification_description">Vokabular wiederholen</string>
 </resources>

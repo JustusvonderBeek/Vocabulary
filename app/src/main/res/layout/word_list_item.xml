@@ -27,25 +27,44 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text='@{String.format("%s", word.vocabulary)}'
+                    style="@style/WordListItemVocabStyle"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text='@{String.format("%s", word.translation)}'
+                    style="@style/WordListItemTransStyle"
+                    />
+
+            </LinearLayout>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{String.format("%s", word.vocabulary)}'
-                style="@style/WordListItemVocabStyle"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{String.format("%s", word.translation)}'
-                style="@style/WordListItemTransStyle"
+                android:id="@+id/confidenceCircle"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/circle"
+                android:text='@{String.format("%d", word.confidence)}'
+                android:textColor="#FFFFFF"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:layout_gravity="center"
                 />
 
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
-
 </layout>

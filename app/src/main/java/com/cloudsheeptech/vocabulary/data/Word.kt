@@ -16,4 +16,16 @@ data class Word(
         else
             this.Repeat - other.Repeat
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is Word) {
+            return (this.Vocabulary == other.Vocabulary) && (this.Translation == other.Translation) && (this.ID == other.ID)
+        }
+        return false
+    }
+
+    fun reset() {
+        this.Confidence = 0
+        this.Repeat = 0
+    }
 }

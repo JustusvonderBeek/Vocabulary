@@ -90,8 +90,9 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                 wordList = convertListWordV1ToWord(oldWordList)
             }
             Log.i("Vocabulary", "Loaded vocabulary with ${wordList.size} words from disk")
-            _vocabulary.addAll(wordList)
-            _liveWordList.value!!.addAll(wordList)
+            val fixedList = fixWhitespace(wordList)
+            _vocabulary.addAll(fixedList)
+            _liveWordList.value!!.addAll(fixedList)
         } catch (ex : Exception) {
             Log.i("Vocabulary", "Failed to load vocabulary from disk: $ex")
         }
@@ -130,6 +131,57 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
         }
     }
 
+    private fun vocabularyEqual(old : List<Word>, new : List<Word>) : Boolean {
+        if (old.size != new.size)
+            return false
+        old.forEachIndexed { index, word ->
+            if (new[index].Vocabulary != word.Vocabulary || new[index].Translation != word.Translation)
+                return false
+        }
+        return true
+    }
+
+    private fun mergeVocabulary(old : List<Word>, new : List<Word>) : MutableList<Word> {
+        val updatedList = mutableListOf<Word>()
+//        /*
+        Log.i("Vocabulary", "Merging list of length ${old.size} and ${new.size}")
+        if (old.size == new.size || old.size < new.size) {
+            Log.i("Vocabulary", "Old == new size")
+            old.forEachIndexed { index, word ->
+                if (new[index] != word) {
+                    updatedList.add(new[index])
+                } else {
+                    updatedList.add(word)
+                }
+            }
+        }
+        if (old.size < new.size) {
+            updatedList.addAll(new.subList(old.size, new.size))
+            Log.i("Vocabulary", "Old < new size")
+        }
+        if (old.size > new.size) {
+            Log.i("Vocabulary", "Old > new size")
+            new.forEachIndexed { index, word ->
+                if (word != old[index]) {
+                    updatedList.add(word)
+                } else {
+                    updatedList.add(old[index])
+                }
+            }
+            updatedList.addAll(old.subList(new.size, old.size))
+        }
+        return updatedList
+//         */
+    }
+
+    private fun fixWhitespace(list : List<Word>) : MutableList<Word> {
+        val updatedList = mutableListOf<Word>()
+        list.forEachIndexed { _, word ->
+            updatedList.add(Word(word.ID, word.Vocabulary.trim(), word.Translation.trim(), word.Confidence, word.Repeat))
+        }
+        return updatedList
+    }
+
     suspend fun updateVocabulary() {
         val init = this::client.isInitialized
         withContext(Dispatchers.IO) {
@@ -142,11 +194,14 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                 val response : HttpResponse = client.get(baseUrl + "words")
                 println("Body:\n${response.bodyAsText(Charsets.UTF_8)}")
                 val bdy = response.body<List<Word>>()
-                _vocabulary.clear()
-                _vocabulary.addAll(bdy)
-                _liveWordList.value!!.clear()
-                _liveWordList.value!!.addAll(bdy)
-                storeVocabularyToDisk()
+                if (!vocabularyEqual(_vocabulary, bdy)) {
+                    _vocabulary = mergeVocabulary(_vocabulary, bdy)
+                    _liveWordList.value!!.clear()
+                    _liveWordList.value!!.addAll(_vocabulary)
+                    storeVocabularyToDisk()
+                } else {
+                    Log.i("Vocabulary", "Vocabulary has not changed")
+                }
 //            Log.i("Vocabulary", "Updated list to $_vocabulary")
                 Log.i("Vocabulary", "Update successful")
             } catch (ex : Exception) {
@@ -189,10 +244,10 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                     Log.e("Vocabulary", "Creation of vocabulary not successful")
                 }
                 val bdy = response.body<List<Word>>()
-                _vocabulary.clear()
-                _vocabulary.addAll(bdy)
+                _vocabulary = mergeVocabulary(_vocabulary, bdy)
                 _liveWordList.value!!.clear()
-                _liveWordList.value!!.addAll(bdy)
+                _liveWordList.value!!.addAll(_vocabulary)
+                storeVocabularyToDisk()
                 return@withContext
             } catch (ex : Exception) {
                 Log.e("Vocabulary", "Failed to post item:\n$ex")
@@ -215,10 +270,9 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                     Log.e("Vocabulary", "Modification of vocabulary not successful")
                 } else {
                     val bdy = response.body<List<Word>>()
-                    _vocabulary.clear()
-                    _vocabulary.addAll(bdy)
+                    _vocabulary = mergeVocabulary(_vocabulary, bdy)
                     _liveWordList.value!!.clear()
-                    _liveWordList.value!!.addAll(bdy)
+                    _liveWordList.value!!.addAll(_vocabulary)
                     storeVocabularyToDisk()
                 }
                 return@withContext

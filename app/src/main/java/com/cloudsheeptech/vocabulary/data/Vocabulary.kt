@@ -266,7 +266,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
     suspend fun updateCorrectRepeat(word : Word) {
         Log.i("Vocabulary", "Word $word correctly repeated")
         word.Repeat += 1
-        word.Confidence = (word.Confidence + 2).coerceAtMost(100)
+        word.Confidence = (word.Confidence + 10).coerceAtMost(100)
         _vocabulary.removeAt(word.ID)
         _vocabulary.add(word.ID, word)
         _liveWordList.value!!.clear()
@@ -281,7 +281,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
     suspend fun updateIncorrectRepeat(word : Word) {
         Log.i("Vocabulary", "Word $word incorrectly repeated")
         word.Repeat += 1
-        word.Confidence = (word.Confidence - 2).coerceAtLeast(1)
+        word.Confidence = (word.Confidence - 5).coerceAtLeast(1)
         _vocabulary.removeAt(word.ID)
         _vocabulary.add(word.ID, word)
         _liveWordList.value!!.clear()

@@ -74,7 +74,7 @@ class EditlistFragment : Fragment(), MenuProvider {
         val adapter = WordListItemAdapter(vocabulary, WordListItemAdapter.WordListItemListener { wordId ->
             Log.i("EditFragment", "Tapped on word with ID $wordId")
             viewModel.editWord(wordId)
-        })
+        }, resources)
         binding.vocabList.adapter = adapter
         // Allow removing item with swipe
         val deleteHelper = ItemTouchHelper(SwipeToDeleteHandler(adapter))

@@ -3,6 +3,9 @@
     <color name="vocabulary_blue">#2386dd</color>
     <color name="vocabulary_gray">#dddddd</color>
 
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
     <color name="confidence_perfect">#00e207</color>
     <color name="confidence_good">#fcee2d</color>
     <color name="confidence_bad">#fc2323</color>

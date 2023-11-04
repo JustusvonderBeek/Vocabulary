@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="Translate:"
                 android:layout_marginBottom="16dp"
-                style="@style/RecapTextViewStyle"
+                style="@style/RecapHeadingViewStyle"
                 />
 
             <TextView
@@ -40,8 +40,8 @@
                 style="@style/RecapTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@{viewModel.showText}" />
+                android:text="@{viewModel.showText}"
+                />
 
             <View
                 android:id="@+id/viewDivider"
@@ -56,26 +56,19 @@
                 style="@style/RecapTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:hint="@string/recap_input_hint"
-                android:text="@={viewModel.inputText}" />
+                android:text="@={viewModel.inputText}"
+                android:background="@null"
+                />
 
             <TextView
-                android:id="@+id/correctResultText"
+                android:id="@+id/resultText"
                 style="@style/RecapTextViewStyle"
+                android:background="@drawable/correct_background"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/recap_correct"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/incorrectResultText"
-                style="@style/RecapTextViewStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/recap_incorrect"
                 android:visibility="gone" />
 
             <TextView
@@ -83,7 +76,7 @@
                 style="@style/RecapTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="@{viewModel.hintText}"
                 android:visibility="gone" />
 
@@ -91,7 +84,7 @@
                 android:id="@+id/countAsCorrectButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Count as correct"
+                android:text="@string/btn_count_correct"
                 android:layout_marginTop="16dp"
                 android:onClick="@{() -> viewModel.countAsCorrect()}"
                 android:visibility="gone"

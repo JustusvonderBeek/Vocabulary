@@ -19,7 +19,7 @@
     <string name="recap_input_hint">Übersetzung eingeben</string>
     <string name="recap_correct">Richtig</string>
     <string name="recap_incorrect">Falsch</string>
-    <string name="recap_check_btn">Überprüfen</string>
+    <string name="btn_check_recap">Überprüfen</string>
     <string name="btn_previous_word">Vorheriges Wort</string>
     <string name="btn_start_recap">Wiederholung anfangen</string>
     <string name="notification_description">Vokabular wiederholen</string>

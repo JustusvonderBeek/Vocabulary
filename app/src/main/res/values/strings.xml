@@ -19,7 +19,7 @@
     <string name="recap_input_hint">Input translation here</string>
     <string name="recap_correct">Correct</string>
     <string name="recap_incorrect">Incorrect</string>
-    <string name="recap_check_btn">Check</string>
+    <string name="btn_check_recap">Check</string>
     <string name="btn_previous_word">Previous Word</string>
     <string name="btn_start_recap">Start Recap</string>
     <string name="notification_channel_name" translatable="false">Reminder</string>

@@ -19,7 +19,7 @@
     <string name="recap_input_hint">Introducir traducción</string>
     <string name="recap_correct">Correcto</string>
     <string name="recap_incorrect">Incorrecto</string>
-    <string name="recap_check_btn">Consulte</string>
+    <string name="btn_check_recap">Consulte</string>
     <string name="btn_previous_word">Palabra anterior</string>
     <string name="btn_start_recap">Iniciar repetición</string>
     <string name="notification_description">Consulta vocabulario</string>

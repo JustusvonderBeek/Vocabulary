@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.cloudsheeptech.vocabulary.SingleEvent
 import com.cloudsheeptech.vocabulary.data.Vocabulary
 import com.cloudsheeptech.vocabulary.data.Word
 import com.cloudsheeptech.vocabulary.datastructures.LearningStack
@@ -11,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.math.exp
 
 class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
 
@@ -22,6 +24,8 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     val hintText = MutableLiveData<String>()
     private val recapList = LearningStack()
     val currentWord = MutableLiveData<Word>()
+    private var currentDirection = RecapDirection.GERMAN_TO_SPANISH
+    private var toggleForward = false
 
     private var _direction = RecapDirection.BOTH
     private var _directionToggle = false
@@ -34,8 +38,8 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     private val _navigateToRecapStart = MutableLiveData<Boolean>(false)
     val navigateToRecapStart : LiveData<Boolean> get() = _navigateToRecapStart
 
-    private var toggleForward = false
-    private var countCorrect = false
+    private val _forward = MutableLiveData<SingleEvent<Boolean>>(SingleEvent(false))
+    val forward : LiveData<SingleEvent<Boolean>> get() = _forward
 
     init {
         currentWord.value = Word(0, "Press check to start", "Press check to start")
@@ -84,17 +88,54 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
         updateWordCorrect(currentWord.value!!)
     }
 
+    private fun wordEqualsInput(word : Word, input : String, direction: RecapDirection) : Boolean {
+        when(direction) {
+            RecapDirection.SPANISH_TO_GERMAN -> {
+                return compareExpectedToInput(word.Vocabulary, input)
+            }
+            RecapDirection.GERMAN_TO_SPANISH -> {
+                return compareExpectedToInput(word.Translation, input)
+            }
+            else -> {
+                Log.e("RecapViewModel", "Given direction is not clear! Error is program")
+            }
+        }
+        return false
+    }
+
+    private fun compareExpectedToInput(expected : String, input : String) : Boolean {
+        val expectedTrimmed = expected.trim()
+        val inputTrimmed = input.trim()
+        if (expectedTrimmed == inputTrimmed)
+            return true
+        // Employ custom comparison
+        var wrongCharCounter = 0
+        for ((i,c) in expectedTrimmed.withIndex()) {
+            if (i >= inputTrimmed.length) {
+                wrongCharCounter += (expectedTrimmed.length - inputTrimmed.length)
+                break
+            }
+            if (c != inputTrimmed[i])
+                wrongCharCounter++
+        }
+        return wrongCharCounter < 2
+    }
+
     fun compareWords() {
         if (toggleForward) {
             toggleForward = false
+            _forward.value = SingleEvent(false)
             showNextWord()
             return
         }
+        // Pressed for the first time, compare given input
         if (inputText.value.isNullOrEmpty()) {
             Log.i("RecapViewModel", "Given input is empty")
-            _result.value = RecapResult.INCORRECT
-            updateWordIncorrect(currentWord.value!!)
             return
+        }
+        val result = wordEqualsInput(currentWord.value!!, inputText.value!!, currentDirection)
+        if (result) {
+
         }
         if (_direction == RecapDirection.BOTH || _direction == RecapDirection.SPANISH_TO_GERMAN) {
             if (!inputText.value.equals(currentWord.value!!.Translation, true)) {
@@ -116,6 +157,7 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
             }
         }
         toggleForward = true
+        _forward.value = SingleEvent(true)
     }
 
     fun showNextWord() {
@@ -153,7 +195,7 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
         _navigateToRecap.value = false
     }
 
-    fun navigateToRecapStart() {
+    private fun navigateToRecapStart() {
         _directionToggle = false
         _navigateToRecapStart.value = true
     }

@@ -75,6 +75,16 @@ class RecapFragment : Fragment() {
             }
         })
 
+        viewModel.forward.observe(viewLifecycleOwner, Observer { forward ->
+            val content = forward.getContentIfNotHandled()
+            content?.let {
+                if (it)
+                    binding.checkButton.text = getText(R.string.btn_next_word)
+                else
+                    binding.checkButton.text = getText(R.string.btn_check_recap)
+            }
+        })
+
         viewModel.navigateToRecapStart.observe(viewLifecycleOwner, Observer { navigate ->
             if (navigate) {
                 findNavController().navigateUp()

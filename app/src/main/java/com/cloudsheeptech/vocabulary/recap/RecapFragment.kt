@@ -42,36 +42,32 @@ class RecapFragment : Fragment() {
         viewModel.result.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 RecapResult.CORRECT -> {
-                    binding.correctResultText.visibility = View.VISIBLE
-                    binding.incorrectResultText.visibility = View.GONE
+                    binding.resultText.visibility = View.VISIBLE
                     binding.hintText.visibility = View.GONE
                     binding.countAsCorrectButton.visibility = View.GONE
                 }
-                RecapResult.COUNT_AS_CORRECT -> {
-                    binding.correctResultText.visibility = View.VISIBLE
-                    binding.incorrectResultText.visibility = View.GONE
-                    binding.hintText.visibility = View.GONE
-                    binding.countAsCorrectButton.visibility = View.GONE
-                }
-                RecapResult.INCORRECT -> {
-                    binding.correctResultText.visibility = View.GONE
-                    binding.incorrectResultText.visibility = View.VISIBLE
+                RecapResult.COUNT_AS_CORRECT, RecapResult.INCORRECT -> {
+                    binding.resultText.visibility = View.VISIBLE
                     binding.hintText.visibility = View.VISIBLE
-                    binding.countAsCorrectButton.visibility = View.VISIBLE
+                    binding.countAsCorrectButton.visibility = View.GONE
                 }
                 RecapResult.NONE -> {
-                    binding.correctResultText.visibility = View.GONE
-                    binding.incorrectResultText.visibility = View.GONE
+                    binding.resultText.visibility = View.GONE
                     binding.hintText.visibility = View.GONE
                     binding.countAsCorrectButton.visibility = View.GONE
                 }
                 null -> {
                     Log.e("RecapFragment", "Given result is null.")
-                    binding.correctResultText.visibility = View.GONE
-                    binding.incorrectResultText.visibility = View.GONE
+                    binding.resultText.visibility = View.GONE
                     binding.hintText.visibility = View.GONE
                     binding.countAsCorrectButton.visibility = View.GONE
                 }
+            }
+        })
+
+        viewModel.resultText.observe(viewLifecycleOwner, Observer { text ->
+            if (text != null) {
+                binding.resultText.text = text
             }
         })
 

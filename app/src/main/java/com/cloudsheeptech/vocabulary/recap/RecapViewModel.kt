@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.math.exp
+import kotlin.random.Random
 
 class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
 
@@ -22,10 +23,12 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     val showText = MutableLiveData<String>()
     val inputText = MutableLiveData<String>()
     val hintText = MutableLiveData<String>()
+    val resultText = MutableLiveData<String>()
     private val recapList = LearningStack()
     val currentWord = MutableLiveData<Word>()
     private var currentDirection = RecapDirection.GERMAN_TO_SPANISH
     private var toggleForward = false
+    private var updateCorrect = false
 
     private var _direction = RecapDirection.BOTH
     private var _directionToggle = false
@@ -46,6 +49,7 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
         showText.value = currentWord.value!!.Vocabulary
         inputText.value = ""
         hintText.value = ""
+        resultText.value = "Correct"
     }
 
     fun setupDirection(selectionResult : RecapDirection) {
@@ -60,10 +64,12 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
             }
             RecapDirection.GERMAN_TO_SPANISH -> {
                 Log.i("RecapViewModel", "Selected german to spanish")
+                currentDirection = RecapDirection.GERMAN_TO_SPANISH
                 RecapDirection.GERMAN_TO_SPANISH
             }
             RecapDirection.SPANISH_TO_GERMAN -> {
                 Log.i("RecapViewModel", "Selected spanish to german")
+                currentDirection = RecapDirection.SPANISH_TO_GERMAN
                 RecapDirection.SPANISH_TO_GERMAN
             }
         }
@@ -84,30 +90,32 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     fun countAsCorrect() {
         Log.i("RecapViewModel", "Counted as correct")
         _result.value = RecapResult.COUNT_AS_CORRECT
-        currentWord.value!!.Repeat -= 1
-        updateWordCorrect(currentWord.value!!)
+       updateCorrect = true
     }
 
-    private fun wordEqualsInput(word : Word, input : String, direction: RecapDirection) : Boolean {
+    // Returns the number of indices that do not match -> 0 == equal
+    private fun wordEqualsInput(word : Word, input : String, direction: RecapDirection) : Int {
         when(direction) {
             RecapDirection.SPANISH_TO_GERMAN -> {
-                return compareExpectedToInput(word.Vocabulary, input)
+                return compareExpectedToInput(word.Translation, input)
             }
             RecapDirection.GERMAN_TO_SPANISH -> {
-                return compareExpectedToInput(word.Translation, input)
+                return compareExpectedToInput(word.Vocabulary, input)
             }
             else -> {
                 Log.e("RecapViewModel", "Given direction is not clear! Error is program")
             }
         }
-        return false
+        // Should NEVER happen
+        return -1
     }
 
-    private fun compareExpectedToInput(expected : String, input : String) : Boolean {
+    // Returns the number of indices that do not match -> 0 == equal
+    private fun compareExpectedToInput(expected : String, input : String) : Int {
         val expectedTrimmed = expected.trim()
         val inputTrimmed = input.trim()
         if (expectedTrimmed == inputTrimmed)
-            return true
+            return 0
         // Employ custom comparison
         var wrongCharCounter = 0
         for ((i,c) in expectedTrimmed.withIndex()) {
@@ -118,13 +126,19 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
             if (c != inputTrimmed[i])
                 wrongCharCounter++
         }
-        return wrongCharCounter < 2
+        return wrongCharCounter
     }
 
     fun compareWords() {
         if (toggleForward) {
             toggleForward = false
+            if (updateCorrect) {
+                updateWordCorrect(currentWord.value!!)
+            } else {
+                updateWordIncorrect(currentWord.value!!)
+            }
             _forward.value = SingleEvent(false)
+            updateCorrect = false
             showNextWord()
             return
         }
@@ -134,49 +148,76 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
             return
         }
         val result = wordEqualsInput(currentWord.value!!, inputText.value!!, currentDirection)
-        if (result) {
-
-        }
-        if (_direction == RecapDirection.BOTH || _direction == RecapDirection.SPANISH_TO_GERMAN) {
-            if (!inputText.value.equals(currentWord.value!!.Translation, true)) {
-                _result.value = RecapResult.INCORRECT
-                hintText.value = "Expected: ${currentWord.value!!.Translation}\nGot: ${inputText.value}"
-                updateWordIncorrect(currentWord.value!!)
-            } else {
-                _result.value = RecapResult.CORRECT
-                updateWordCorrect(currentWord.value!!)
-            }
+        if (result == 0) {
+            resultText.value = "Correct"
+            _result.value = RecapResult.CORRECT
+            updateCorrect = true
         } else {
-            if (!inputText.value.equals(currentWord.value!!.Vocabulary, true)) {
-                _result.value = RecapResult.INCORRECT
-                hintText.value = "Expected: ${currentWord.value!!.Vocabulary}\nGot: ${inputText.value}"
-                updateWordIncorrect(currentWord.value!!)
+            if (result in 1..2) {
+                updateCorrect = true
+                resultText.value = "Correct"
             } else {
-                _result.value = RecapResult.CORRECT
-                updateWordCorrect(currentWord.value!!)
+                updateCorrect = false
+                resultText.value = "Incorrect"
+            }
+            _result.value = RecapResult.INCORRECT
+            when (currentDirection) {
+                RecapDirection.SPANISH_TO_GERMAN -> {
+                    if (result in 1..2)
+                        hintText.value = "Minor mistake: ${currentWord.value!!.Translation}\n~=\n${inputText.value}"
+                    else
+                        hintText.value = "Expected: ${currentWord.value!!.Translation}\nGot: ${inputText.value}"
+                }
+                RecapDirection.GERMAN_TO_SPANISH -> {
+                    if (result in 1..2)
+                        hintText.value = "Minor mistake: ${currentWord.value!!.Vocabulary}\n~=\n${inputText.value}"
+                    else
+                        hintText.value = "Expected: ${currentWord.value!!.Vocabulary}\nGot: ${inputText.value}"
+                }
+                else -> {
+                    Log.i("RecapViewModel", "Incorrect state, this direction is not allowed")
+                }
             }
         }
         toggleForward = true
         _forward.value = SingleEvent(true)
     }
 
-    fun showNextWord() {
+    private fun showNextWord() {
+        // Reset helping text etc.
         _result.value = RecapResult.NONE
         val next = recapList.getNextWord()
         if (next == null) {
+            // TODO: Maybe add some recap overview?
             // Nothing more to show, navigate to home I guess
             navigateToRecapStart()
             return
         }
         currentWord.value = next!!
-        // Decide what to show
-        if (_direction == RecapDirection.BOTH || _direction == RecapDirection.SPANISH_TO_GERMAN) {
-            showText.value = next.Vocabulary
-        } else {
-            showText.value = next.Translation
-        }
         inputText.value = ""
         hintText.value = ""
+        // Decide what to show
+        when(_direction) {
+            RecapDirection.BOTH -> {
+                // Decide which direction to use
+                val direction = Random.nextInt(0, 2)
+                if (direction == 0) {
+                    Log.i("RecapViewModel", "Direction is German to Spanish")
+                    showText.value = next.Translation
+                    currentDirection = RecapDirection.GERMAN_TO_SPANISH
+                } else {
+                    Log.i("RecapViewModel", "Direction is Spanish to German")
+                    showText.value = next.Vocabulary
+                    currentDirection = RecapDirection.SPANISH_TO_GERMAN
+                }
+            }
+            RecapDirection.GERMAN_TO_SPANISH -> {
+                showText.value = next.Translation
+            }
+            RecapDirection.SPANISH_TO_GERMAN -> {
+                showText.value = next.Vocabulary
+            }
+        }
     }
 
     private fun prepareRecap() {

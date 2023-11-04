@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -42,11 +43,15 @@ class RecapFragment : Fragment() {
         viewModel.result.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 RecapResult.CORRECT -> {
+                    binding.resultText.background = ResourcesCompat.getDrawable(resources, R.drawable.correct_background, resources.newTheme())
+                    binding.resultText.setTextColor(resources.getColor(R.color.black, resources.newTheme()))
                     binding.resultText.visibility = View.VISIBLE
                     binding.hintText.visibility = View.GONE
                     binding.countAsCorrectButton.visibility = View.GONE
                 }
                 RecapResult.COUNT_AS_CORRECT, RecapResult.INCORRECT -> {
+                    binding.resultText.background = ResourcesCompat.getDrawable(resources, R.drawable.incorrect_background, resources.newTheme())
+                    binding.resultText.setTextColor(resources.getColor(R.color.white, resources.newTheme()))
                     binding.resultText.visibility = View.VISIBLE
                     binding.hintText.visibility = View.VISIBLE
                     binding.countAsCorrectButton.visibility = View.GONE

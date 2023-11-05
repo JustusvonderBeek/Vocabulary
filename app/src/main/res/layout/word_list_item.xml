@@ -64,6 +64,7 @@
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:layout_gravity="center"
+                android:visibility="invisible"
                 />
 
         </LinearLayout>

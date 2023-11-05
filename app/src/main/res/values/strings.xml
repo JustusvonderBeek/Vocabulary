@@ -26,4 +26,5 @@
     <string name="notification_description">Recap your vocabular</string>
     <string name="CHANNEL_ID" translatable="false">RecapChannel</string>
     <string name="btn_count_correct">Count correct</string>
+    <string name="btn_swap_word">Swap Fields</string>
 </resources>

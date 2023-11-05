@@ -24,4 +24,5 @@
     <string name="btn_start_recap">Wiederholung anfangen</string>
     <string name="notification_description">Vokabular wiederholen</string>
     <string name="btn_count_correct">War richtig</string>
+    <string name="btn_swap_word">Felder tauschen</string>
 </resources>

@@ -24,4 +24,5 @@
     <string name="btn_start_recap">Iniciar repetición</string>
     <string name="notification_description">Consulta vocabulario</string>
     <string name="btn_count_correct">Es correcto</string>
+    <string name="btn_swap_word">Cambiar palabras</string>
 </resources>

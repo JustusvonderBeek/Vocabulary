@@ -49,12 +49,19 @@ class RecapFragment : Fragment() {
                     binding.hintText.visibility = View.GONE
                     binding.countAsCorrectButton.visibility = View.GONE
                 }
-                RecapResult.COUNT_AS_CORRECT, RecapResult.INCORRECT -> {
+                RecapResult.COUNT_AS_CORRECT -> {
                     binding.resultText.background = ResourcesCompat.getDrawable(resources, R.drawable.incorrect_background, resources.newTheme())
                     binding.resultText.setTextColor(resources.getColor(R.color.white, resources.newTheme()))
                     binding.resultText.visibility = View.VISIBLE
                     binding.hintText.visibility = View.VISIBLE
                     binding.countAsCorrectButton.visibility = View.GONE
+                }
+                RecapResult.INCORRECT -> {
+                    binding.resultText.background = ResourcesCompat.getDrawable(resources, R.drawable.incorrect_background, resources.newTheme())
+                    binding.resultText.setTextColor(resources.getColor(R.color.white, resources.newTheme()))
+                    binding.resultText.visibility = View.VISIBLE
+                    binding.hintText.visibility = View.VISIBLE
+                    binding.countAsCorrectButton.visibility = View.VISIBLE
                 }
                 RecapResult.NONE -> {
                     binding.resultText.visibility = View.GONE

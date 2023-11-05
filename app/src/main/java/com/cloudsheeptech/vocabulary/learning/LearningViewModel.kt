@@ -25,9 +25,12 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
     val learningVocabulary = MutableLiveData<String>()
     val translateVocabulary = MutableLiveData<String>()
 
-    private val _progress = MutableLiveData<String>()
-    val progress : LiveData<String>
-        get() = _progress
+    private val _currentVocabId = MutableLiveData<String>()
+    val currentVocabId : LiveData<String>
+        get() = _currentVocabId
+
+    private val _totalVocab = MutableLiveData<String>()
+    val totalVocab : LiveData<String> get() = _totalVocab
 
     private val _navigateToEdit = MutableLiveData<Int>(-1)
     val navigateToEdit : LiveData<Int> get() = _navigateToEdit
@@ -35,13 +38,14 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
     private val _imageUrl = MutableLiveData<String>()
     val imageUrl : LiveData<String> get() = _imageUrl
 
-    private var currVocabIdx = 0
+    private var currVocabIdx = -1
     private var learningList = LearningStack()
 
     init {
         learningVocabulary.value = "Click on next"
         translateVocabulary.value = "Auf weiter klicken"
-        _progress.value = "0/0"
+        _totalVocab.value = vocabulary.length().toString()
+        _currentVocabId.value = "0"
     }
 
     fun showNextWord() {
@@ -62,13 +66,13 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
         if (vocabulary.wordList.isNotEmpty()) {
             currVocabIdx = Math.floorMod(currVocabIdx + 1, vocabulary.wordList.size)
             next = vocabulary.wordList[currVocabIdx]
-            vmScope.launch {
-                loadImageToWord(next.Translation)
-            }
+//            vmScope.launch {
+////                loadImageToWord(next.Translation)
+//            }
         }
         this.learningVocabulary.value = next.Vocabulary
         this.translateVocabulary.value = next.Translation
-        this._progress.value = (currVocabIdx + 1).toString() + "/" + vocabulary.wordList.size.toString()
+        this._currentVocabId.value = (next.ID + 1).toString()
         Log.i("LearningViewModel", "Updated vocab to: ${learningVocabulary.value}")
     }
 
@@ -82,7 +86,7 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
         }
         this.learningVocabulary.value = previous.Vocabulary
         this.translateVocabulary.value = previous.Translation
-        this._progress.value = (currVocabIdx + -1).toString() + "/" + vocabulary.wordList.size.toString()
+        this._currentVocabId.value = (previous.ID + 1).toString()
     }
 
     fun removeWord() {

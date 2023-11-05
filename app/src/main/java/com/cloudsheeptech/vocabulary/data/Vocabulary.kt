@@ -347,4 +347,8 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
         }
     }
 
+    fun length() : Int {
+        return wordList.size
+    }
+
 }

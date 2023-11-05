@@ -27,4 +27,9 @@
     <string name="CHANNEL_ID" translatable="false">RecapChannel</string>
     <string name="btn_count_correct">Count correct</string>
     <string name="btn_swap_word">Swap Fields</string>
+    <string name="nav_start_recap_title">Start Recap</string>
+    <string name="recap_start_title">Select the recap direction</string>
+    <string name="recap_direction_both">Both</string>
+    <string name="recap_direction_german_to_spanish">German to Spanish</string>
+    <string name="recap_direction_spanish_to_german">Spanish to German</string>
 </resources>

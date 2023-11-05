@@ -25,4 +25,9 @@
     <string name="notification_description">Vokabular wiederholen</string>
     <string name="btn_count_correct">War richtig</string>
     <string name="btn_swap_word">Felder tauschen</string>
+    <string name="nav_start_recap_title">Abfrage anfangen</string>
+    <string name="recap_start_title">Abfragerichtung auswählen</string>
+    <string name="recap_direction_both">Beide</string>
+    <string name="recap_direction_german_to_spanish">Deutsch zu Spanisch</string>
+    <string name="recap_direction_spanish_to_german">Spanisch zu Deutsch</string>
 </resources>

@@ -25,4 +25,9 @@
     <string name="notification_description">Consulta vocabulario</string>
     <string name="btn_count_correct">Es correcto</string>
     <string name="btn_swap_word">Cambiar palabras</string>
+    <string name="nav_start_recap_title">Iniciar repeticion</string>
+    <string name="recap_start_title">Seleccione la direccion de repeticion</string>
+    <string name="recap_direction_both">Ambos</string>
+    <string name="recap_direction_german_to_spanish">De aleman a espanol</string>
+    <string name="recap_direction_spanish_to_german">De espanol a aleman</string>
 </resources>

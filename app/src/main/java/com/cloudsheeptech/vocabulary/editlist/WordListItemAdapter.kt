@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -36,24 +37,30 @@ class WordListItemAdapter(private val vocabulary: Vocabulary, val clickListener:
             binding.clickListener = clickListener
             val theme = resource.newTheme()
             var color = resource.getColor(R.color.confidence_new, theme)
+            var gradient = R.drawable.new_gradient
             when (Confidence.convertIntToConfidence(item.Confidence)) {
                 Confidence.PERFECT -> {
                     color = resource.getColor(R.color.confidence_perfect, theme)
+                    gradient = R.drawable.perfect_gradient
                 }
                 Confidence.GOOD -> {
                     color = resource.getColor(R.color.confidence_good, theme)
+                    gradient = R.drawable.good_gradient
                 }
                 Confidence.BAD -> {
                     color = resource.getColor(R.color.confidence_bad, theme)
+                    gradient = R.drawable.bad_gradient
                 }
                 Confidence.POOR -> {
                     color = resource.getColor(R.color.confidence_poor, theme)
+                    gradient = R.drawable.poor_gradient
                 }
                 else -> {
                     // Does not happen
                 }
             }
             binding.confidenceCircle.background.setTint(color)
+            binding.itemWrapper.background = ResourcesCompat.getDrawable(resource, gradient, theme)
             binding.executePendingBindings()
         }
 

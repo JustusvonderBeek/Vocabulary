@@ -44,6 +44,9 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     private val _forward = MutableLiveData<SingleEvent<Boolean>>(SingleEvent(false))
     val forward : LiveData<SingleEvent<Boolean>> get() = _forward
 
+    private val _hideKeyboard = MutableLiveData<Boolean>(false)
+    val hideKeyboard : LiveData<Boolean> get() = _hideKeyboard
+
     init {
         currentWord.value = Word(0, "Press check to start", "Press check to start")
         showText.value = currentWord.value!!.Vocabulary
@@ -147,6 +150,7 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
             Log.i("RecapViewModel", "Given input is empty")
             return
         }
+        hideKeyboard()
         val result = wordEqualsInput(currentWord.value!!, inputText.value!!, currentDirection)
         if (result == 0) {
             resultText.value = "Correct"
@@ -219,6 +223,14 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
                 showText.value = next.Vocabulary
             }
         }
+    }
+
+    private fun hideKeyboard() {
+        _hideKeyboard.value = true
+    }
+
+    fun keyboardHidden() {
+        _hideKeyboard.value = false
     }
 
     private fun prepareRecap() {

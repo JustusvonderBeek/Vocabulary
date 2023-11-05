@@ -1,13 +1,16 @@
 package com.cloudsheeptech.vocabulary.recap
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.content.getSystemService
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
@@ -90,6 +93,14 @@ class RecapFragment : Fragment() {
                     binding.checkButton.text = getText(R.string.btn_next_word)
                 else
                     binding.checkButton.text = getText(R.string.btn_check_recap)
+            }
+        })
+
+        viewModel.hideKeyboard.observe(viewLifecycleOwner, Observer { hide ->
+            if (hide) {
+                val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+                viewModel.keyboardHidden()
             }
         })
 

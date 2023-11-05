@@ -156,11 +156,12 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
             if (result in 1..2) {
                 updateCorrect = true
                 resultText.value = "Correct"
+                _result.value = RecapResult.COUNT_AS_CORRECT
             } else {
                 updateCorrect = false
                 resultText.value = "Incorrect"
+                _result.value = RecapResult.INCORRECT
             }
-            _result.value = RecapResult.INCORRECT
             when (currentDirection) {
                 RecapDirection.SPANISH_TO_GERMAN -> {
                     if (result in 1..2)

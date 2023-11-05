@@ -1,5 +1,6 @@
 package com.cloudsheeptech.vocabulary.edit
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -30,6 +31,13 @@ class EditViewModel(val vocabulary: Vocabulary) : ViewModel() {
             translation.value = selected.Translation
             wordId = selected.ID
         }
+    }
+
+    fun swapWordFields() {
+        Log.i("EditViewModel", "Swapping the word")
+        val tmp = word.value!!
+        word.value = translation.value
+        translation.value = tmp
     }
 
     fun editWord() {

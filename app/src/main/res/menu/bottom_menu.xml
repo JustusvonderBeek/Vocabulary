@@ -5,7 +5,7 @@
         android:id="@+id/learning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/ic_learn_foreground"
+        android:icon="@drawable/ic_learn"
         android:title="@string/nav_btn_learn" />
 
     <item
@@ -20,7 +20,7 @@
         android:id="@+id/edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/ic_edit_foreground"
+        android:icon="@drawable/ic_edit"
         android:title="@string/nav_btn_edit" />
 
 </menu>

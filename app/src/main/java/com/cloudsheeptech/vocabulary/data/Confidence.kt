@@ -22,18 +22,18 @@ enum class Confidence(val value : Int) {
         fun fromInt(value: Int) = Confidence.values().first { it.value == value }
 
         fun convertIntToConfidence(value : Int) : Confidence {
-            return if (value in NEW_LOWER_LIMIT..POOR_LOWER_LIMIT) {
-                Confidence.NEW
-            } else if (value in (POOR_LOWER_LIMIT + 1)..BAD_LOWER_LIMIT) {
-                Confidence.POOR
+            return if (value == NEW_LOWER_LIMIT) {
+                NEW
+            } else if (value in POOR_LOWER_LIMIT..BAD_LOWER_LIMIT) {
+                POOR
             } else if (value in (BAD_LOWER_LIMIT + 1)..GOOD_LOWER_LIMIT) {
-                Confidence.BAD
+                BAD
             } else if (value in (GOOD_LOWER_LIMIT + 1)..PERFECT_LOWER_LIMIT) {
-                Confidence.GOOD
+                GOOD
             } else if (value in (PERFECT_LOWER_LIMIT + 1)..PERFECT_UPPER_LIMIT) {
-                Confidence.PERFECT
+                PERFECT
             } else {
-                Confidence.NEW
+                NEW
             }
         }
 

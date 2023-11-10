@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/addVocabularyBtn"
-        android:title="Add Vocabulary"
+        android:title="@string/nav_btn_add"
         android:icon="@drawable/ic_add_foreground"
         />
 </menu>

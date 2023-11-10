@@ -33,7 +33,7 @@ class RemindersManager {
                         context.applicationContext,
                         reminderId,
                         intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_IMMUTABLE
                     )
                 }
             val calendar: Calendar = Calendar.getInstance(Locale.GERMAN).apply {

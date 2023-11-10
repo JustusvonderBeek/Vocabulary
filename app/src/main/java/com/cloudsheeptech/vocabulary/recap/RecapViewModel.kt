@@ -126,7 +126,7 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
                 wrongCharCounter += (expectedTrimmed.length - inputTrimmed.length)
                 break
             }
-            if (c != inputTrimmed[i])
+            if (c.lowercase() != inputTrimmed[i].lowercase())
                 wrongCharCounter++
         }
         return wrongCharCounter

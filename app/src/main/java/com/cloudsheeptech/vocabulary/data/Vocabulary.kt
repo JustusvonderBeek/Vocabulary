@@ -135,10 +135,20 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
         if (old.size != new.size)
             return false
         old.forEachIndexed { index, word ->
-            if (new[index].Vocabulary != word.Vocabulary || new[index].Translation != word.Translation)
+            if (new[index].Vocabulary != word.Vocabulary || new[index].Translation != word.Translation || new[index].Confidence != word.Confidence)
                 return false
         }
         return true
+    }
+
+    private fun removeLocalItem(id : Int, list : List<Word>) : MutableList<Word> {
+        if (id > list.size || id < 0) {
+            Log.e("Vocabulary", "Given index $id for removal is incorrect")
+        }
+        val removedList = mutableListOf<Word>()
+        removedList.addAll(list.subList(0, id))
+        removedList.addAll(list.subList(id+1, list.size))
+        return removedList
     }
 
     private fun mergeVocabulary(old : List<Word>, new : List<Word>) : MutableList<Word> {
@@ -305,14 +315,50 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
                 if (response.status != HttpStatusCode.OK) {
                     Log.e("Vocabulary", "Item not successfully removed")
                 }
+                _vocabulary = removeLocalItem(id, _vocabulary)
                 withContext(Dispatchers.Main) {
                     val decoded = jsonHandler.decodeFromString<MutableList<Word>>(response.bodyAsText(Charsets.UTF_8))
-                    _vocabulary = decoded
-                    _liveWordList.value = decoded
+                    if (!vocabularyEqual(_vocabulary, decoded)) {
+                        Log.i("Vocabulary", "Received vocabulary differs from the remote one!")
+                    } else {
+                        _liveWordList.value!!.clear()
+                        _liveWordList.value!!.addAll(_vocabulary)
+                        storeVocabularyToDisk()
+                    }
                 }
                 return@withContext
             } catch (ex : Exception) {
                 Log.e("Vocabulary", "Failed to remove item:\n$ex")
+            }
+        }
+    }
+
+    suspend fun pushConfidence() {
+        val init = this::client.isInitialized
+        withContext(Dispatchers.IO) {
+            if (!init) {
+                initClient()
+            }
+            try {
+                if (wordList.isEmpty()) {
+                    Log.i("Vocabulary", "Own vocabulary is empty. Cannot push")
+                    return@withContext
+                }
+                Log.i("Vocabulary", "Pushing confidence")
+                val confidenceList = mutableListOf<WordConfidence>()
+                for (word in wordList) {
+                    confidenceList.add(WordConfidence(word.ID, word.Confidence, word.Repeat))
+                }
+                val encodedList = jsonHandler.encodeToString(confidenceList)
+                val response : HttpResponse = client.post(baseUrl + "confidence") {
+                    setBody(encodedList)
+                }
+                if (response.status != HttpStatusCode.Accepted) {
+                    Log.e("Vocabulary", "Server did not accept confidence list")
+                }
+                return@withContext
+            } catch (ex : Exception) {
+                Log.e("Vocabulary", "Failed to push confidence:\n$ex")
             }
         }
     }
@@ -323,8 +369,9 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
         word.Confidence = (word.Confidence + 10).coerceAtMost(100)
         _vocabulary.removeAt(word.ID)
         _vocabulary.add(word.ID, word)
-        _liveWordList.value!!.clear()
-        _liveWordList.value!!.addAll(_vocabulary)
+        // Does this work?
+        _liveWordList.value!![word.ID] = word
+        pushConfidence()
         Log.i("Vocabulary", "Updated word to $word")
         Log.i("Vocabulary", "Updated vocabulary to $wordList")
         withContext(Dispatchers.IO) {
@@ -340,6 +387,7 @@ class Vocabulary private constructor(private val vocabularyLocation : File) {
         _vocabulary.add(word.ID, word)
         _liveWordList.value!!.clear()
         _liveWordList.value!!.addAll(_vocabulary)
+        pushConfidence()
         Log.i("Vocabulary", "Updated word to $word")
         Log.i("Vocabulary", "Updated vocabulary to $wordList")
         withContext(Dispatchers.IO) {

@@ -6,9 +6,9 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
-    <color name="confidence_perfect">#00e207</color>
-    <color name="confidence_good">#fcee2d</color>
-    <color name="confidence_bad">#fc2323</color>
-    <color name="confidence_poor">#303030</color>
-    <color name="confidence_new">#0047e2</color>
+    <color name="confidence_perfect">#00bf33</color>
+    <color name="confidence_good">#d2fc00</color>
+    <color name="confidence_bad">#faaf00</color>
+    <color name="confidence_poor">#e61102</color>
+    <color name="confidence_new">#0296e6</color>
 </resources>

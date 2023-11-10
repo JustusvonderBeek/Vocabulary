@@ -32,6 +32,9 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
     private val _totalVocab = MutableLiveData<String>()
     val totalVocab : LiveData<String> get() = _totalVocab
 
+    private val _currConfidence = MutableLiveData<Int>()
+    val currentConfidence : LiveData<Int> get() = _currConfidence
+
     private val _navigateToEdit = MutableLiveData<Int>(-1)
     val navigateToEdit : LiveData<Int> get() = _navigateToEdit
 
@@ -46,6 +49,7 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
         translateVocabulary.value = "Auf weiter klicken"
         _totalVocab.value = vocabulary.length().toString()
         _currentVocabId.value = "0"
+        _currConfidence.value = 0
     }
 
     fun showNextWord() {
@@ -70,8 +74,12 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
 ////                loadImageToWord(next.Translation)
 //            }
         }
+        if (totalVocab.value!!.toInt() != vocabulary.length()) {
+            _totalVocab.value = vocabulary.length().toString()
+        }
         this.learningVocabulary.value = next.Vocabulary
         this.translateVocabulary.value = next.Translation
+        this._currConfidence.value = next.Confidence
         this._currentVocabId.value = (next.ID + 1).toString()
         Log.i("LearningViewModel", "Updated vocab to: ${learningVocabulary.value}")
     }
@@ -84,9 +92,13 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
             currVocabIdx = Math.floorMod(currVocabIdx - 1, vocabulary.wordList.size)
             previous = vocabulary.wordList[currVocabIdx]
         }
+        if (totalVocab.value!!.toInt() != vocabulary.length()) {
+            _totalVocab.value = vocabulary.length().toString()
+        }
         this.learningVocabulary.value = previous.Vocabulary
         this.translateVocabulary.value = previous.Translation
         this._currentVocabId.value = (previous.ID + 1).toString()
+        this._currConfidence.value = previous.Confidence
     }
 
     fun removeWord() {

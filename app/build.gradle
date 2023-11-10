@@ -15,8 +15,8 @@ android {
         applicationId "com.cloudsheeptech.vocabulary"
         minSdk 29
         targetSdk 33
-        versionCode 24
-        versionName "2.1"
+        versionCode 28
+        versionName "2.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

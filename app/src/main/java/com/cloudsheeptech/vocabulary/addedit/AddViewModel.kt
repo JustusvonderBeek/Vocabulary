@@ -1,5 +1,6 @@
 package com.cloudsheeptech.vocabulary.addedit
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,6 +23,13 @@ class AddViewModel(val vocabulary: Vocabulary) : ViewModel() {
     private val handledToast = MutableLiveData<SingleEvent<String>>()
     val toast : LiveData<SingleEvent<String>>
         get() = handledToast
+
+    fun swapFields() {
+        Log.i("AddViewModel", "Swapping fields")
+        val tmp = word.value!!
+        word.value = translation.value!!
+        translation.value = tmp
+    }
 
     fun addNewWord() {
         addVmScope.launch {

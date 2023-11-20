@@ -24,6 +24,7 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     val inputText = MutableLiveData<String>()
     val hintText = MutableLiveData<String>()
     val resultText = MutableLiveData<String>()
+    val recapWordCount = MutableLiveData<Int>()
     private val recapList = LearningStack()
     val currentWord = MutableLiveData<Word>()
     private var currentDirection = RecapDirection.GERMAN_TO_SPANISH
@@ -50,6 +51,7 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
     init {
         currentWord.value = Word(0, "Press check to start", "Press check to start")
         showText.value = currentWord.value!!.Vocabulary
+        recapWordCount.value = 10
         inputText.value = ""
         hintText.value = ""
         resultText.value = "Correct"
@@ -235,7 +237,7 @@ class RecapViewModel(val vocabulary: Vocabulary) : ViewModel() {
 
     private fun prepareRecap() {
         recapList.addAll(vocabulary.wordList)
-        recapList.selectItems(10)
+        recapList.selectItems(recapWordCount.value!!)
     }
 
     fun navigateToRecap() {

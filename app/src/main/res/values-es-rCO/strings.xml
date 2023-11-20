@@ -30,4 +30,5 @@
     <string name="recap_direction_both">Ambos</string>
     <string name="recap_direction_german_to_spanish">De aleman a espanol</string>
     <string name="recap_direction_spanish_to_german">De espanol a aleman</string>
+    <string name="recap_start_word_cnt">Numeros de vocabulario por repeticion</string>
 </resources>

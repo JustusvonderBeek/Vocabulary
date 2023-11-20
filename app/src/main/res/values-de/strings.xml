@@ -30,4 +30,5 @@
     <string name="recap_direction_both">Beide</string>
     <string name="recap_direction_german_to_spanish">Deutsch zu Spanisch</string>
     <string name="recap_direction_spanish_to_german">Spanisch zu Deutsch</string>
+    <string name="recap_start_word_cnt">Anzahl an Vokabeln zum Wiederholen</string>
 </resources>

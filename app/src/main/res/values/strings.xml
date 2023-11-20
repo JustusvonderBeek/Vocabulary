@@ -32,4 +32,5 @@
     <string name="recap_direction_both">Both</string>
     <string name="recap_direction_german_to_spanish">German to Spanish</string>
     <string name="recap_direction_spanish_to_german">Spanish to German</string>
+    <string name="recap_start_word_cnt">Number of Words for Recap</string>
 </resources>

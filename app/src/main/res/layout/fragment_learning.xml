@@ -90,7 +90,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text='@{String.format("%s / %s", learningVM.currentVocabId, learningVM.totalVocab)}'
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:paddingBottom="16dp"
+                />
+
+            <SeekBar
+                android:id="@+id/learningSeekBar"
+                android:min="0"
+                android:progress="@={learningVM.learningWordSelection}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
 
         </LinearLayout>
 

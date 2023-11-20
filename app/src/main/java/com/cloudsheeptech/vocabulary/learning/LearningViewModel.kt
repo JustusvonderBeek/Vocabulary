@@ -25,6 +25,8 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
     val learningVocabulary = MutableLiveData<String>()
     val translateVocabulary = MutableLiveData<String>()
 
+    val learningWordSelection = MutableLiveData<Int>()
+
     private val _currentVocabId = MutableLiveData<String>()
     val currentVocabId : LiveData<String>
         get() = _currentVocabId
@@ -50,6 +52,7 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
         _totalVocab.value = vocabulary.length().toString()
         _currentVocabId.value = "0"
         _currConfidence.value = 0
+        learningWordSelection.value = 0
     }
 
     fun showNextWord() {
@@ -81,6 +84,7 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
         this.translateVocabulary.value = next.Translation
         this._currConfidence.value = next.Confidence
         this._currentVocabId.value = (next.ID + 1).toString()
+        learningWordSelection.value = next.ID
         Log.i("LearningViewModel", "Updated vocab to: ${learningVocabulary.value}")
     }
 
@@ -99,6 +103,7 @@ class LearningViewModel(val vocabulary: Vocabulary) : ViewModel() {
         this.translateVocabulary.value = previous.Translation
         this._currentVocabId.value = (previous.ID + 1).toString()
         this._currConfidence.value = previous.Confidence
+        this.learningWordSelection.value = previous.ID
     }
 
     fun removeWord() {

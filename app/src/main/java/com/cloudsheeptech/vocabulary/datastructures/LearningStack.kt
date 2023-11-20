@@ -83,8 +83,8 @@ class LearningStack {
                 learningStack.add(word)
             }
         }
-        println("Selected: $learningStack")
-        println("Missing total of $missingItems items")
+        Log.i( "LearningStack", "Selected (${learningStack.size}): $learningStack")
+        Log.i("LearningStack", "Missing total of $missingItems items")
         learningStack.shuffle()
         return learningStack.size
     }
